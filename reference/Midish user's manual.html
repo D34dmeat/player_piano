@@ -1,0 +1,4604 @@
+
+<!-- saved from url=(0112)http://webcache.googleusercontent.com/search?q=cache:mzRe16kH4YkJ:www.midish.org/manual.html&hl=en&gl=us&strip=1 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<style type="text/css"></style></head><body><div style="background:#fff;border:1px solid #999;margin:-1px -1px 0;padding:0;"><div style="background:#ddd;border:1px solid #999;color:#000;font:13px arial,sans-serif;font-weight:normal;margin:12px;padding:8px;text-align:left">This is Google's cache of <a href="http://www.midish.org/manual.html" style="text-decoration:underline;color:#00c">http://www.midish.org/manual.html</a>. It is a snapshot of the page as it appeared on Dec 17, 2014 16:34:15 GMT. The <a href="http://www.midish.org/manual.html" style="text-decoration:underline;color:#00c">current page</a> could have changed in the meantime. <a href="http://support.google.com/websearch/bin/answer.py?hl=en&p=cached&answer=1687222" style="text-decoration:underline;color:#00c">Learn more</a><br>Tip: To quickly find your search term on this page, press <b>Ctrl+F</b> or <b>⌘-F</b> (Mac) and use the find bar.<br><br><div style="float:right"><a href="http://webcache.googleusercontent.com/search?q=cache:mzRe16kH4YkJ:www.midish.org/manual.html&hl=en&gl=us&strip=0" style="text-decoration:underline;color:#00c">Full version</a></div>
+<div>&nbsp;</div></div></div><div style="position:relative">
+
+<!--
+
+Copyright (c) 2003-2012 Alexandre Ratchov &lt;alex@caoua.org&gt;
+
+Permission to use, copy, modify, and distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+-->
+
+
+<title>Midish user's manual</title>
+
+<meta name="language" content="en">
+
+
+
+
+<h1>Midish user's manual and tutorial</h1>
+
+<!-- toc_begin - automatically generated, don't modify -->
+<h2>Table of contents</h2>
+<ul>
+<li><a href="#intro">1 Introduction</a>
+<ul>
+<li><a href="#section_1_1">1.1 What is midish?</a>
+</li><li><a href="#install">1.2 Installation</a>
+</li><li><a href="#section_1_3">1.3 Invocation</a>
+</li><li><a href="#section_1_4">1.4 How does it work</a>
+</li><li><a href="#section_1_5">1.5 An example</a>
+</li></ul>
+</li><li><a href="#dev">2 Devices setup</a>
+</li><li><a href="#inputs">3 Input channels</a>
+</li><li><a href="#chan">4 Output channels</a>
+<ul>
+<li><a href="#section_4_1">4.1 Channel configuration</a>
+</li></ul>
+</li><li><a href="#ev">5 Events and event sets specification</a>
+<ul>
+<li><a href="#ev_ev">5.1 Event specification</a>
+</li><li><a href="#ev_evspec">5.2 Event set specification</a>
+</li><li><a href="#ev_evpat">5.3 User-defined events</a>
+</li></ul>
+</li><li><a href="#filt">6 Filtering/routing</a>
+<ul>
+<li><a href="#section_6_1">6.1 Filter rules</a>
+</li><li><a href="#section_6_2">6.2 Rules hierarchy</a>
+</li><li><a href="#section_6_3">6.3 Examples</a>
+<ul>
+<li><a href="#section_6_3_1">6.3.1 Device redirections</a>
+</li><li><a href="#section_6_3_2">6.3.2 Channel maps</a>
+</li><li><a href="#section_6_3_3">6.3.3 Controller maps</a>
+</li><li><a href="#section_6_3_4">6.3.4 Transpose</a>
+</li><li><a href="#section_6_3_5">6.3.5 Keyboard splits</a>
+</li></ul>
+</li></ul>
+</li><li><a href="#time">7 Time structure</a>
+<ul>
+<li><a href="#section_7_1">7.1 Moving within the song</a>
+</li><li><a href="#section_7_2">7.2 Metronome</a>
+</li><li><a href="#section_7_3">7.3 Time signature changes</a>
+</li><li><a href="#section_7_4">7.4 Tempo changes</a>
+</li></ul>
+</li><li><a href="#track">8 Tracks</a>
+<ul>
+<li><a href="#section_8_1">8.1 Recording a track without a filter</a>
+</li><li><a href="#section_8_2">8.2 Recording a track with a filter</a>
+</li><li><a href="#section_8_3">8.3 Basics about editing tracks</a>
+</li><li><a href="#section_8_4">8.4 Copy, cut, insert</a>
+</li><li><a href="#section_8_5">8.5 Track quantization</a>
+</li><li><a href="#section_8_6">8.6 Checking a track</a>
+</li></ul>
+</li><li><a href="#frames">9 Frames, more about filtering and editing</a>
+<ul>
+<li><a href="#section_9_1">9.1 Note frames</a>
+</li><li><a href="#section_9_2">9.2 Pitch bend frames</a>
+</li><li><a href="#ctl_frames">9.3 Controller frames</a>
+</li><li><a href="#section_9_4">9.4 Other frames</a>
+</li></ul>
+</li><li><a href="#sysex">10 System exclusive messages</a>
+</li><li><a href="#info">11 Obtaining information</a>
+</li><li><a href="#save">12 Saving and loading songs</a>
+</li><li><a href="#export">13 Import/export standard MIDI files</a>
+</li><li><a href="#interpreter">14 The interpreter's language</a>
+<ul>
+<li><a href="#section_14_1">14.1 Global variables</a>
+</li><li><a href="#section_14_2">14.2 Defining simple procedures</a>
+</li></ul>
+</li><li><a href="#changes">15 Changes</a>
+<ul>
+<li><a href="#changes_02">15.1 Changes from release 0.1 to release 0.2</a>
+</li><li><a href="#changes_03">15.2 Changes from release 0.2 to release 0.3</a>
+</li><li><a href="#changes_04">15.3 Changes from release 0.3 to release 0.4</a>
+</li><li><a href="#section_15_4">15.4 Changes from release 0.4 to release 1.0</a>
+</li><li><a href="#section_15_5">15.5 Changes from release 1.0 to release 1.1</a>
+</li></ul>
+</li><li><a href="#attributes">16 Project attributes</a>
+<ul>
+<li><a href="#section_16_1">16.1 Device attributes</a>
+</li><li><a href="#section_16_2">16.2 Channel attributes</a>
+</li><li><a href="#section_16_3">16.3 Filter attributes</a>
+</li><li><a href="#section_16_4">16.4 Track attributes</a>
+</li><li><a href="#section_16_5">16.5 Sysex attributes</a>
+</li><li><a href="#section_16_6">16.6 Song attributes</a>
+</li></ul>
+</li><li><a href="#language">17 Language reference</a>
+<ul>
+<li><a href="#section_17_1">17.1 Lexical structure</a>
+</li><li><a href="#section_17_2">17.2 Statements</a>
+</li><li><a href="#section_17_3">17.3 Expressions</a>
+</li><li><a href="#section_17_4">17.4 Procedure definition</a>
+</li></ul>
+</li><li><a href="#functs">18 Function reference</a>
+<ul>
+<li><a href="#func_track">18.1 Track functions</a>
+</li><li><a href="#func_input">18.2 Input functions</a>
+</li><li><a href="#func_output">18.3 Output functions</a>
+</li><li><a href="#func_filt">18.4 Filter functions</a>
+</li><li><a href="#func_sysex">18.5 System exclusive messages functions</a>
+</li><li><a href="#func_rt">18.6 Real-time functions</a>
+</li><li><a href="#func_song">18.7 Song functions</a>
+</li><li><a href="#func_dev">18.8 Device functions</a>
+</li><li><a href="#func_ev">18.9 Event functions</a>
+</li><li><a href="#func_misc">18.10 Misc. functions</a>
+</li></ul>
+</li><li><a href="#section_19">19 Using midish in other programs</a>
+<ul>
+<li><a href="#section_19_1">19.1 Creating scripts: batch mode</a>
+</li><li><a href="#section_19_2">19.2 Creating front-ends: verbose mode</a>
+</li></ul>
+</li><li><a href="#midishrc">20 Sample midishrc-file</a>
+</li><li><a href="#example">21 Example sessions</a>
+<ul>
+<li><a href="#section_21_1">21.1 Example - MIDI filtering</a>
+</li><li><a href="#section_21_2">21.2 Example - recording a track</a>
+</li></ul>
+</li><li><a href="#copyright">22 Copyright</a>
+</li><li><a href="#section_23">23 Thanks</a>
+</li></ul>
+<!-- toc_end -->
+
+<h2><a name="intro">1 Introduction</a></h2>
+<h3><a name="section_1_1">1.1 What is midish?</a></h3>
+
+<p>
+Midish is an open-source MIDI sequencer/filter for
+Unix-like operating systems (tested on OpenBSD and Linux).
+Implemented as a simple command-line interpreter (like a shell)
+it's intended to be <i>lightweight</i>,
+<i>fast</i> and <i>reliable</i> for
+real-time performance.
+
+</p><p>
+Important features:
+
+</p><ul>
+
+<li>
+real-time MIDI filtering/routing (controller mapping, keyboard splitting, ...)
+
+</li><li>
+track recording, metronome
+
+</li><li>
+track editing (insert, copy, delete, ...)
+
+</li><li>
+progressive track quantization
+
+</li><li>
+multiple MIDI devices handling
+
+</li><li>
+synchronization to external audio and MIDI software/hardware
+
+</li><li>
+import and export of standard MIDI files
+
+</li><li>
+tempo and time-signature changes
+
+</li><li>
+system exclusive messages handling
+
+</li></ul>
+
+<p>
+Midish is open-source software distributed under
+a BSD-style <a href="#copyright">license</a>.
+
+</p><h3><a name="install">1.2 Installation</a></h3>
+
+<p>
+Requirements:
+
+</p><ul>
+
+<li>
+A MIDI sound module and a MIDI keyboard
+(without any MIDI devices midish will be probably useless).
+
+</li><li>
+A POSIX unix-like operating system with "raw" MIDI support.
+Works on OpenBSD (its development platform)
+and Linux.
+
+</li><li>
+A ``C'' complier (gcc), the ``make'' utility, and other common
+unix tools
+
+</li><li>
+The readline library (which depends on the ncurses library on most
+systems)
+
+</li><li>
+The ALSA library (on Linux only).
+
+</li></ul>
+
+<p>
+Certain Linux distributions split libraries in two packages: one with run-time
+files only and one with development files.
+
+Both are necessary to build midish.
+
+Usually development packages have the ``-dev'' or ``-devel'' suffix.
+
+For instance, on Debian, package names are ``libreadline-dev'' and
+``libasound2-dev''.
+
+</p><p>
+To install midish:
+
+</p><ol>
+
+<li>
+Untar and gunzip the tar-ball:
+
+<pre>gunzip midish-1.0.tar.gz
+tar -xf midish-1.0.tar
+cd midish-1.0
+</pre>
+
+</li><li>
+Configure midish, type ``./configure'', it will select reasonable
+defaults.
+
+<p>
+On Linux systems it will use ALSA devices, on OpenBSD
+it will use sndio(7) devices and on other systems
+it will use raw MIDI devices.
+
+Binaries, scripts, examples and documentation will be installed
+in the /usr/local directory subtree; this can be overridden 
+with the ``--prefix'' option.
+
+Example:
+
+</p><pre>./configure --prefix=$HOME
+</pre>
+
+</li><li>
+Compile midish, just type ``make'', this will build
+midish and rmidish, the readline(3) front-end to midish.
+
+</li><li>
+Install binaries, documentation and examples by
+typing ``make install'', possibly as root.
+
+</li><li>
+If there isn't a ``/etc/midishrc'' file,
+then copy the sample file by
+typing in your shell:
+
+<pre>cp midishrc /etc
+</pre>
+
+</li><li>
+Read the documentation and modify ``/etc/midishrc'' in order
+to choose the default MIDI device by using the 
+``<a href="#func_dnew">dnew</a>''
+function, example (if you're using raw devices):
+<pre>dnew 0 "/dev/rmidi3" rw
+</pre>
+
+or if you're using ALSA (default on Linux),
+the following formats are accepted:
+<pre>dnew 0 "28:0" rw
+dnew 0 "FLUID Synth (qsynth)" wo 
+</pre>
+
+on OpenBSD, the following formats are accepted:
+<pre>dnew 0 "rmidi/3" rw
+dnew 0 "midithru/0" rw
+dnew 0 "snd/0" rw
+</pre>
+
+see next section for details.
+</li></ol>
+
+
+<h3><a name="section_1_3">1.3 Invocation</a></h3>
+
+<p>
+Midish is a MIDI sequencer/filter driven by a command-line
+interpreter (like a shell).
+
+Once midish started, the interpreter prompts
+for commands.
+
+Then, it can be used to configure MIDI devices,
+create tracks, define channel/controller mappings,
+route events from one device to another, play/record a song etc.
+
+To start midish, just type:
+
+</p><pre>rmidish
+</pre>
+
+<p>
+Then, commands are issued interactively on the midish prompt,
+example:
+
+</p><pre>print "hello world"
+</pre>
+
+<p>
+Once MIDI devices are set up, one of the performance modes
+can be started or stopped with one of the following
+single letter commands:
+
+</p><ul>
+
+<li>
+``<a href="#func_i">i</a>'' - 
+idle, open MIDI devices but do nothing,
+just process input and send it to the output.
+
+</li><li>
+``<a href="#func_p">p</a>'' - 
+play, open MIDI devices and start playback
+
+</li><li>
+``<a href="#func_r">r</a>'' -
+record, open MIDI devices and start playback and
+recording
+
+</li><li>
+``<a href="#func_s">s</a>'' -
+stop one of the above and close MIDI devices.
+</li></ul>
+
+<p>
+In performance mode certain features are not available (like
+most editing functions).
+
+Thus performance mode should be disabled in order to
+be able to edit the song; furthermore MIDI
+devices are closed and thus are available to other
+applications.
+
+</p><h3><a name="section_1_4">1.4 How does it work</a></h3>
+
+<p>
+Midish uses the following objects to represent a project:
+
+</p><ul>
+
+<li>
+<b>MIDI devices:</b><br>
+
+these are actual MIDI devices (keyboards, sound modules,
+external sequencers...) from which events are received and/or to which
+they are sent.
+
+</li><li>
+<b>Input channels:</b><br>
+
+they represent ``{device&nbsp;midi-channel}'' pair on which MIDI events
+arrive, like a MIDI keyboard, a MIDI control surface etc...
+
+</li><li>
+<b>Output channels:</b><br>
+
+they represent ``{device&nbsp;midi-channel}'' pair on which MIDI events
+can be sent, like synths. <i>Output channel</i> objects hold
+properties like patch number, volume, reverb depth or other
+controllers.
+
+</li><li>
+<b>Filters:</b><br>
+
+a filter is a set of rules that determines which MIDI event to discard
+and how to transform incoming events. The filter also "sanitizes" the
+input MIDI stream by removing nested notes, duplicate controllers and
+other anomalies.
+
+</li><li>
+<b>Tracks:</b><br>
+
+tracks represent pieces of music: they hold MIDI voice events
+(notes, controllers ...). Tracks aren't bound to a particular
+channel and can contain events from any channel.
+
+</li><li>
+<b>Sysex banks:</b><br>
+
+a sysex bank is a set of system exclusive messages. They
+will be sent to MIDI devices when performance mode is entered.
+
+</li><li>
+<b>The "meta-track":</b><br>
+
+it is a particular hidden track that contains
+only special events like tempo changes and time signature changes.
+
+</li><li>
+<b>Song parameters:</b><br>
+
+these are miscellaneous parameters like the
+metronome configuration, the current position, current selection...
+
+</li></ul>
+
+<p>
+Above objects are grouped in a <i>project</i> (a song) and manipulated
+in prompt mode by issuing interactively commands.
+
+</p><p>
+Performance mode is used to play/record the project. When performance
+mode is entered, MIDI devices are opened, and all sysex messages and
+channel configuration events are sent. There are three
+performance modes:
+
+</p><ul>
+
+<li>
+<b>"Idle" mode</b><br>
+
+The MIDI input passes through the <i>current filter</i>
+and the result is sent to the MIDI output. No tracks are
+played or recorded.
+
+<pre>+---------+          +------------+          +----------+
+|         |          |            |          |          |
+| MIDI in |---------&gt;|   filter   |---------&gt;| MIDI out |
+|         |          |            |          |          |
++---------+          +------------+          +----------+
+</pre>
+
+</li><li>
+<b>Play mode</b><br>
+
+The MIDI input passes through the <i>current filter</i>
+the result is mixed with the currently played tracks
+and finally sent to the MIDI output. No tracks are recorded.
+
+<pre>                        +--------------+
+                        | track_1 play |---\
+                        +--------------+   |
+                                           |
+                             ...        ---+
+                                           |
+                        +--------------+   |
+                        | track_N play |---+
+                        +--------------+   |
+                                           |
++---------+             +------------+     |    +----------+
+|         |             |            |     \---&gt;|          |
+| MIDI in |------------&gt;|   filter   |---------&gt;| MIDI out |
+|         |             |            |          |          |
++---------+             +------------+          +----------+
+</pre>
+
+</li><li>
+<b>Record mode</b><br>
+
+The MIDI input passes through the <i>current filter</i>
+and is recorded on the <i>current track</i>.
+The result is mixed with the currently played tracks
+and finally sent to the MIDI output. System exclusive
+messages are recorded to the <i>current sysex</i> without
+being passed through the filter.
+
+<pre>                        +--------------+
+                        | track_1 play |---\
+                        +--------------+   |
+                                           |
+                             ...        ---+
+                                           |
+                        +--------------+   |
+                        | track_N play |---+
+                        +--------------+   |
+                                           |
++---------+             +------------+     |    +----------+
+|         |             |            |     \---&gt;|          |
+| MIDI in |-----+------&gt;|   filter   |----+----&gt;| MIDI out |
+|         |     |       |            |    |     |          |
++---------+     |       +------------+    |     +----------+
+                |                         |
+                |                         |     +----------------+
+                |       +--------------+  \----&gt;| track_X record |
+                \------&gt;| sysex record |        +----------------+
+                        +--------------+
+</pre>
+
+</li></ul>
+
+<p>
+The above performance modes are started with
+the single letter commands
+``<a href="#func_i">i</a>'',
+``<a href="#func_p">p</a>'' and
+``<a href="#func_r">r</a>'' respectively.
+
+Certain functions are not available during performance mode; to stop
+it, use the
+``<a href="#func_s">s</a>'' function.
+
+</p><h3><a name="section_1_5">1.5 An example</a></h3>
+
+<p>
+Suppose that there are two devices:
+
+</p><ul>
+
+<li>
+``/dev/rmidi4'' - a MIDI sound module
+
+</li><li>
+``/dev/rmidi3'' - a MIDI keyboard
+
+</li></ul>
+
+<p>
+In this case, the ``/etc/midishrc'' file probably should contain
+the following lines:
+
+</p><pre>dnew 0 "/dev/rmidi4" wo         # attach the module as dev number 0
+dnew 1 "/dev/rmidi3" ro         # attach the keyboard as dev number 1
+</pre>
+
+<p>
+the ``wo'' parameter means that the device will be opened in
+write-only mode.  
+
+</p><p>
+If you're using ALSA, instead of /dev/rmidi3 and /dev/rmidi4,
+use the ALSA sequencer ports, as listed by
+``aseqdump -l'', example:
+
+</p><pre>dnew 0 "28:0" wo                # attach the module as dev number 0
+dnew 1 "32:0" ro                # attach the keyboard as dev number 1
+</pre>
+
+<p>
+Alsa also accepts client names, instead of client numbers,
+ex:
+
+</p><pre>dnew 0 "FLUID Synth (qsynth)" wo 
+</pre>
+
+<p>
+If you're using OpenBSD, insted of /dev/rmidi3 and /dev/rmidi4,
+use the sndio(7) port names:
+
+</p><pre>dnew 0 "rmidi/3" wo             # attach the module as dev number 0
+dnew 1 "rmidi/4" ro             # attach the keyboard as dev number 1
+</pre>
+
+<p>
+The following session shows how to record a simple
+track.  First, we define a filter named ``piano'' that routes any
+event from device 1, channel 0 (input channel of the keyboard) to
+device 0, channel 5 (output channel of the sound module). Then we
+create a new track ``pi1'', we start recording and we save the
+song into a file.
+
+</p><pre>send EOF character (control-D) to quit
+[0000:00]&gt; fnew piano                        # create filter "piano"
+[0000:00]&gt; fmap {any {1 0}} {any {0 5}}      # dev=1,ch=0 -&gt; dev=0,ch=5
+[0000:00]&gt; tnew pi1                          # create track "pi1"
+[0000:00]&gt; r                                 # start recording
+[0006:02]&gt; s                                 # stop recording
+[0000:00]&gt; save "mysong"                     # save the song into a file
+[0000:00]&gt;                                   # EOF (control-D) to quit
+</pre>
+
+<h2><a name="dev">2 Devices setup</a></h2>
+
+<p>
+In midish, MIDI devices are numbered from 0 to 15.
+Each MIDI device has its <i>device number</i>. 
+
+For instance, suppose that there is a MIDI sound module known as
+``/dev/rmidi3'' and a MIDI keyboard known as
+``/dev/rmidi4''.
+
+The following commands will configure the module as device number 0
+and the keyboard as device number 1:
+
+</p><pre>dnew 0 "/dev/rmidi4" rw
+dnew 1 "/dev/rmidi3" rw
+</pre>
+
+<p>
+If you're using ALSA, then use ALSA port names (as listed by
+``aseqdump -l'' command) instead of the device node paths.
+
+If ``nil'' is given instead of the path, then the port is not
+connected to any existing port; this allows other ALSA sequencer
+clients to subscribe to it and to provide events to midish or to
+consume events midish sends to it.
+
+</p><p>
+If you're using OpenBSD, then use sndio(7) port names (hardware ports,
+software MIDI thru boxes, aucat(1) control devices).
+
+</p><p>
+<b>Note:</b>
+
+To make easier the import/export procedure from systems
+with different configurations, it's strongly recommended to
+attach the main sound module (the mostly used one)
+as device number 0.
+
+</p><p>
+In order to check that the sound module is properly configured
+play the demo song:
+
+</p><pre>send EOF character (control-D) to quit
+[0000:00]&gt; load "sample.sng"         # load the file
+[0000:00]&gt; p                         # start playback
+[0004:02]&gt; s                         # stop playback
+</pre>
+
+<p>
+When devices are set up, put the corresponding dnew
+commands in the user's ``$HOME/.midishrc''. It will be
+automatically executed the next time midish is run.
+
+</p><h2><a name="inputs">3 Input channels</a></h2>
+
+<p>
+Since midish handles multiple input sources, instead of
+using MIDI channels, it uses device / MIDI channel pairs
+to represent inputs.
+
+So in this document <i>input channel</i> refers the 
+``{device&nbsp;MIDI-channel}'' pair on which MIDI events
+are incoming.
+
+Channels are handled by two-item lists, like this:
+
+</p><pre>{1 0}                   # device 1, MIDI channel 0
+</pre>
+
+<p>
+Channels can also be named using the 
+``<a href="#func_inew">inew</a>'' command,
+as follows:
+
+</p><pre>inew keyboard {1 0}
+</pre>
+
+<p>
+this defines a named input channel ``keyboard'' that can
+be used instead of the ``{1 0}'' pair.
+
+</p><p>
+<b>Note:</b>
+input channels are used as default values by certain functions,
+so it's better to register inputs using the
+``<a href="#func_inew">inew</a>'' command.
+
+The easier is to add a ``inew'' statement in your ``$HOME/.midishrc''
+file, to avoid typing it every time midish is started.
+
+</p><h2><a name="chan">4 Output channels</a></h2>
+
+<p>
+As for input channels, midish uses device / MIDI channel pairs
+to represent outputs.
+
+So in this document <i>output channel</i> refers the
+``{device&nbsp;MIDI-channel}'' pair to which MIDI events will
+be sent.
+
+Output channels are handled by two-item lists, like this:
+
+</p><pre>{0 4}                   # device 0, MIDI channel 4
+</pre>
+
+<p>
+they can also be named using the 
+``<a href="#func_onew">onew</a>'' command, as follows:
+
+</p><pre>onew mybass {0 4}
+</pre>
+
+<p>
+this defines a named channel ``mybass'' that can
+be used instead of the ``{0 4}'' pair.
+
+</p><p>
+Output channels expose a built-in filter with the same name; it
+defines how input events are routed to the output channel.
+
+The filter comes with a default rule that routes all input channels to
+the given output channel.
+
+See filter section for further details.
+
+</p><h3><a name="section_4_1">4.1 Channel configuration</a></h3>
+
+<p>
+An output channel represents one musical instrument; midish allows
+basic channel configuration events (like program changes and
+controllers) to be attached to the channel definition.
+
+Such events are sent to the output when performance mode is entered,
+for instance just before playback is started.
+
+This approach avoids flooding MIDI devices with slow events (like
+program changes).
+
+</p><p>
+For instance,
+to select patch 34 on channel ``mybass'', attach
+a ``program change'' event:
+
+</p><pre>oaddev mybass {pc mybass 32}
+</pre>
+
+<p>
+the list argument gives the event to attach to the channel.
+See the <a href="#ev_ev">event</a> section for
+more details about events.
+
+</p><p>
+To set the volume (controller 7) of this channel to 120:
+
+</p><pre>oaddev mybass {ctl mybass 7 120}
+</pre>
+
+<p>
+If several events of the same type are attached
+then just the last one is kept. So, the following
+will change the volume to 125 by replacing the above event:
+
+</p><pre>oaddev mybass {ctl mybass 7 125}
+</pre>
+
+<h2><a name="ev">5 Events and event sets specification</a></h2>
+
+<h3><a name="ev_ev">5.1 Event specification</a></h3>
+
+<p>
+An event is specified as a list containing:
+
+</p><ul>
+
+<li>
+a reference from the following list: noff, non,
+kat, xctl, xpc, cat, bend
+rpn, nrpn.
+
+</li><li>
+a channel
+
+</li><li>
+a number
+
+</li><li>
+a second number (not for ``cat'' and ``bend'')
+
+</li></ul>
+
+<p>
+Event references correspond to the following
+MIDI events:
+
+</p><p>
+
+    ref. name   MIDI event
+
+<table border="1">
+
+<tbody><tr></tr><tr>    <td>noff        </td><td>note off
+
+</td></tr><tr>    <td>non         </td><td>note off
+
+</td></tr><tr>    <td>kat         </td><td>key after-touch (poly)
+
+</td></tr><tr>    <td>ctl         </td><td>7-bit controller
+
+</td></tr><tr>    <td>xctl        </td><td>14-bit controller
+
+</td></tr><tr>    <td>xpc         </td><td>bank and program change
+
+</td></tr><tr>    <td>cat         </td><td>channel after-touch (mono)
+
+</td></tr><tr>    <td>bend        </td><td>pitch bend
+
+</td></tr><tr>    <td>rpn         </td><td>RPN change
+
+</td></tr><tr>    <td>nrpn        </td><td>NRPN change
+
+</td></tr></tbody></table>
+
+</p><p>
+Examples:
+<br>
+note-on event on device 2, channel 9, note 64 with velocity 100:
+
+</p><pre>{non {2 9} 64 100}
+</pre>
+
+<p>
+program change device 1, channel 3, patch 34, bank 1234
+
+</p><pre>{xpc {1 3} 34 1234}
+</pre>
+
+<p>
+set controller number 7 to 99
+on device/channel drums:
+
+</p><pre>{ctl drums 7 99}
+</pre>
+
+<h3><a name="ev_evspec">5.2 Event set specification</a></h3>
+
+<p>
+Filter and track editing functions use <i>event sets</i> to select the
+set of events they will affect.
+
+For instance a filter may check if incoming events match an user
+supplied event set in order to decide whether to drop or to keep the
+incoming event.
+
+The user must specify event sets as lists of parameter ranges.
+
+An event set is a list containing:
+
+</p><ul>
+
+<li>
+A keyword specifying the type of the selected events:
+any, note, ctl, pc,
+cat, bend, rpn, nrpn
+xpc, xctl, none
+
+</li><li>
+an optional channel set.
+
+If a name is given, its interpreted as an input or output created with
+<a href="#func_inew">inew</a> or <a href="#func_onew">onew</a>.
+
+If a number is given, it matches all MIDI channels of the
+given device number.
+
+Alternatively, a list containing a device number range and a MIDI channel
+number range can be used (see examples below).
+
+</li><li>
+an optional number range, specified as a list of two number separated
+by the ``..'' operator, like ``12..65''.
+
+</li><li>
+an optional second number range, in the same
+format as the first one (not permitted for ``pc'',
+``bend'' and ``cat'')
+
+</li></ul>
+
+<p>
+In the above, empty lists can also be used. An empty list means "match
+everything". If the ``none'' keyword is used as event set type then the
+event set is the empty set, i.e. it matches no events.
+
+
+</p><p>
+Examples:
+<br>
+
+</p><pre>{}                      # match everything
+{ any }                 # match everything
+{ none }                # match nothing
+{ any 1 }		# match anything on device 1
+{ any bass }            # match anything on channel "bass"
+{ any {1 4} }           # match anything on device 1, channel 4
+{ note }                # match note events
+{ note {1 9} }          # match notes on dev 1, channel 9
+{ note {0 3..5} }       # match notes on device 0, channel 3, 4, 5
+{ note {} 0..64 }       # match notes between 0 an 64
+{ ctl bass }            # match controllers on channel "bass"
+{ ctl bass 7 }          # match controller 7 on channel "bass"
+{ bend {} }             # match bender
+{ xctl {} 19 }          # match 14-bit controller number 19
+{ xpc  {} 21 1234 }     # match patch 21 on bank 1234
+{ nrpn {} 21 }          # match NRPN 21 change
+</pre>
+
+<h3><a name="ev_evpat">5.3 User-defined events</a></h3>
+
+<p>
+Short system-exclusive patterns can be handled as events.
+
+Such events are defined with the <a href="#func_evpat">evpat</a>
+function.
+
+</p><h2><a name="filt">6 Filtering/routing</a></h2>
+
+<p>
+A <i>filter</i> transforms incoming MIDI events and send them to the
+output. 
+
+The filter also sanitizes the input MIDI stream by removing nested
+notes, duplicate controllers and other anomalies.
+
+Filters are in general used to:
+
+</p><ul>
+
+<li>
+route events from a device/channel to another
+
+</li><li>
+map a controller to another
+
+</li><li>
+split the keyboard
+
+</li><li>
+drop unwanted events
+
+</li><li>
+etc...
+
+</li></ul>
+
+<p>
+Multiple filters can be defined, however only the
+<i>current filter</i> will run in performance
+mode.
+
+If no filters are defined or if there is no current filter
+then, in performance mode, input is sent to the output as-is.
+
+In any cases input events are checked for inconsistencies: nested
+note-on, orphaned note-off and duplicate controller, bender and
+aftertouch events are removed.  The rate of controller, bender and
+aftertouch events is normalized in order not to flood output devices.
+
+</p><p>
+Filters are defined as follows:
+
+</p><pre>fnew myfilt                     # create filter "myfilt"
+</pre>
+
+<p>
+initially the filter is empty and will send input to output
+as-is.
+
+Once the filter is created, filtering rules can be added, modified and
+removed.
+
+The filtering rules can be listed with the
+<a href="#func_finfo">finfo</a> function.
+All rules can be removed with the
+<a href="#func_freset">freset</a> function.
+
+See <a href="#func_filt">filtering functions</a>
+section for details.
+
+</p><h3><a name="section_6_1">6.1 Filter rules</a></h3>
+
+<p>
+The filter is configured through a list of filtering rules provided
+by the user.
+
+Each rule teaches the filter which incoming events to transform on
+which outgoing events.
+
+A rule is defined as 
+
+</p><ul>
+
+<li>a source event set
+
+</li><li>a destination event set
+
+</li></ul>
+
+<p>
+When the filter is running if an incoming event is contained in the
+source set, then it is rewritten to match the destination set.
+
+With the following rule:
+
+</p><pre>note {1 3} -&gt; note {2 8}
+</pre>
+
+<p>
+note events arriving on device 1 midi-channel 3 are sent
+to device 2, midi-channel 8.
+
+</p><p>
+The source and destination event sets must be of the same type
+and must contain ranges of the same size.
+
+If the source and destination event sets contain
+ranges, then the incoming event will be rewritten
+to match the destination by being shifted.
+
+For instance, the following rule:
+
+</p><pre>note {0 0} 40..49 -&gt; note {0 0} 60..69
+</pre>
+
+<p>
+will map notes on channel ``{0 0}'' by rewriting:
+
+</p><ul>
+
+<li>note 40 into note 60
+
+</li><li>note 41 into note 61
+
+</li><li>note 42 into note 62
+
+</li><li>...
+
+</li><li>note 49 into note 69
+
+</li></ul>
+
+<p>
+In order to discard a set of input events, it's possible to create
+rules with the empty set as destination set. For instance to
+discard the volume controller (number 7) on channel 
+``{0 0}'' the following rule might be used:
+
+</p><pre>ctl {0 0} 7 -&gt; none
+</pre>
+
+<p>
+Rules
+are created and delete with the
+<a href="#func_fmap">fmap</a> and 
+<a href="#func_funmap">funmap</a> functions respectively.
+
+For instance, to create a filter with the
+above rules:
+
+</p><pre>send EOF character (control-D) to quit
+[0000:00]&gt; fnew myfilt
+[0000:00]&gt; fmap {note {1 3}}        {note {2 8}}
+[0000:00]&gt; fmap {note {0 0} 40..49} {note {0 0} 60..69}
+[0000:00]&gt; fmap {ctl {0 0} 7}       {none}
+[0000:00]&gt; finfo
+{
+        evmap xctl {0 0} 7 &gt; none
+        evmap note {0 0} 40..49 &gt; note {0 0} 60..69
+        evmap note {1 3} 0..127 &gt; note {2 8} 0..127
+}
+</pre>
+
+<h3><a name="section_6_2">6.2 Rules hierarchy</a></h3>
+
+<p>
+In real life, the filter will probably have to contain multiple rules.
+
+If the input event matches the source set of two rules, then the most
+specific rule wins, i.e. the event is run only through the rule with the
+smaller source set.
+
+If both rules have the same source set, then the event is duplicated
+and run through both rules.
+
+</p><p>
+This mechanism is very useful because it allows to define a default
+rule with a large source set and then to refine it by defining
+exceptions to it.
+
+For instance consider the following filter:
+
+</p><pre>fnew myfilt
+fmap {any kbd} {any piano}
+fmap {ctl kbd 1} {ctl piano 11}
+</pre>
+
+<p>
+the first rule will map all events coming from channel ``kbd'' (the
+input) to channel ``piano'' (the output); the second rule maps
+controller 1 (modulation) to controller 11 (expression).
+
+Controller 1 events match source sets of both rules, but they will be
+run through the second rule only, because it has the smaller set.
+
+The order in which rules are created is not important because 
+<a href="#func_fmap">fmap</a> and <a href="#func_funmap">funmap</a>
+functions will always sort them.
+
+</p><p>
+That last point to retain is that in order to avoid inconsistencies
+there's a constraint on the source sets of rules of the same filter:
+if two source sets overlap, then one of them must contain the other
+one.
+
+The user doesn't need to care about this constraint since
+<a href="#func_fmap">fmap</a> and <a href="#func_funmap">funmap</a>
+functions will do the right thing in all cases.
+
+</p><h3><a name="section_6_3">6.3 Examples</a></h3>
+
+<h4><a name="section_6_3_1">6.3.1 Device redirections</a></h4>
+
+<p>
+The following example defines a filter that routes events from
+device number 1 (the MIDI keyboard) to device number 0
+(the sound module).
+
+</p><pre>fnew mydevmap                           # define filter "mydevmap"
+fmap {any 1} {any 0}                    # make it route device 1 -&gt; device 0
+</pre>
+
+<p>
+To test the filter, start performance mode using the
+``<a href="#func_i">i</a>'' command and
+then type
+``<a href="#func_s">s</a>'' to stop performance mode
+
+</p><h4><a name="section_6_3_2">6.3.2 Channel maps</a></h4>
+
+<p>
+The following example defines a filter that routes events from device
+1, midi channel 0 (first channel of the keyboard) to device 0, midi
+channel 9 (default drum channel of the sound module).
+
+</p><pre>fnew mydrums                            # define filter "mydrums"
+fmap {any {1 0}} {any {0 9}}            # route dev/chan {1 0} to {0 9}
+</pre>
+
+<p>
+To test the filter, start performance mode using the
+``<a href="#func_i">i</a>'' command.
+
+Playing on channel 0 of the keyboard will make sound channel 9 of the
+sound-module.
+
+To stop performance mode, use
+``<a href="#func_s">s</a>'' command.
+
+</p><h4><a name="section_6_3_3">6.3.3 Controller maps</a></h4>
+
+<p>
+The following example add a new rule to the above filter that maps the
+modulation wheel (controller 1) of the source channel (i.e. device 1,
+midi channel 0) to the expression controller (number 11) of the
+destination channel (device 0, midi channel 9).
+
+</p><pre>fmap {ctl {1 0} 1} {ctl {0 9} 11}
+</pre>
+
+<p>
+Rules of the filter can be listed with the 
+<a href="#func_finfo">finfo</a>
+functions, which should display the list
+of rules as follows:
+
+</p><pre>{
+        evmap any {1 0} &gt; any {0 9}
+        evmap xctl {1 0} 1 &gt; xctl {0 9} 11
+}
+</pre>
+
+<h4><a name="section_6_3_4">6.3.4 Transpose</a></h4>
+
+<p>
+The following will transpose notes on ``{0 2}'' by 12 halftones:
+
+</p><pre>fnew mypiano                                    # define filter ``mypiano''
+fmap {any {1 0}} {any  {0 2}}                   # route {1 0} -&gt; {0 9}
+ftransp {any {0 2}} 12                          # transpose by 12 halftones
+</pre>
+
+<p>
+First we create the filter, and we add a ``default'' rule to map
+anything coming from ``{1 0}'' (i.e. the MIDI keyboard) to ``{0 2}''
+(the second channel of the synth).
+
+The second rule transposes anything the filter generated
+on channel ``{0 2}''.
+
+Note that the order of the rules is not important, the
+``<a href="#func_ftransp">ftransp</a>''
+rule always applies to events outgoing from the filter.
+
+</p><h4><a name="section_6_3_5">6.3.5 Keyboard splits</a></h4>
+
+<p>
+In the same way it is possible to create a keyboard-split with two
+key-rules and two channel-rules.
+The following example splits the
+keyboard in two parts (left and right) on note 64 (note E3, the
+middle of the keyboard).
+Notes on the left part  will be routed to
+channel 3 of the sound module and notes on the right
+part will be routed to channel 2 of the sound module.
+
+</p><pre>fnew mysplit
+fmap {any {1 0}} {any {0 2}}
+fmap {any {1 0}} {any {0 3}}
+fmap {note {1 0} 0..63}   {note {0 2} 0..63}
+fmap {note {1 0} 64..127} {note {0 3} 64..127}
+</pre>
+
+<p>
+Defining filters seems quite tedious, however it's possible
+to define procedures that do the same in a very simpler way.
+See the <a href="#interpreter">interpreter language</a>
+for more details.
+
+</p><h2><a name="time">7 Time structure</a></h2>
+
+<p>
+In midish, time is split in <i>measures</i>. Each measure
+is split in <i>beats</i> and each beat is split in
+<i>ticks</i>. The <i>tick</i> is the fundamental
+time unit in midish. Duration of ticks is fixed
+by the <i>tempo</i>. By default midish uses:
+
+</p><ul>
+
+<li>
+24 ticks per beat
+
+</li><li>
+4 beats per measure
+
+</li><li>
+120 beats per minute
+
+</li></ul>
+
+<p>
+From the musical point of view, a beat often corresponds to
+a quarter note, to an eighth note etc...
+
+By default
+a whole note corresponds to 96 ticks, thus by default
+one beat corresponds to one quarter note, i.e.
+the time signature is 4/4.
+
+</p><h3><a name="section_7_1">7.1 Moving within the song</a></h3>
+
+<p>
+The following selects the current position in the song to
+measure number 3:
+
+</p><pre>g 3
+</pre>
+
+<p>
+This will make
+``<a href="#func_p">p</a>''
+and
+``<a href="#func_r">r</a>''
+commands start at this particular position instead of measure
+number 0.
+
+Furthermore all track editing function will process
+the track starting at this position.
+
+</p><h3><a name="section_7_2">7.2 Metronome</a></h3>
+
+<p>
+In order to "hear" time, a metronome can be used.
+
+It has three modes:
+
+</p><ul>
+
+<li>off - metronome is disabled
+
+</li><li>on - metronome is enabled
+
+</li><li>rec - metronome is enabled only for recording (default)
+
+</li></ul>
+
+<p>
+The
+``<a href="#func_m">m</a>''
+command can be used to 
+change the mode of the metronome:
+
+</p><pre>m on            # switch the metronome on
+p               # start playback
+s               # stop
+</pre>
+
+<p>
+The metronome has two kind of click-sound:
+
+</p><ul>
+
+<li>
+high-click: on the first beat of the measure
+
+</li><li>
+low-click: on the other beats.
+
+</li></ul>
+
+<p>
+The click-sound can be configured by giving a couple
+of note-on events, as follows:
+
+</p><pre>metrocf {non {0 9} 48 127} {non {0 9} 64 100}
+</pre>
+
+<p>
+this configures the high-click with note 48, velocity 127 on
+device 0, channel 9 and the low-click with note 64, velocity 100
+on device 0, channel 9.
+
+</p><h3><a name="section_7_3">7.3 Time signature changes</a></h3>
+
+<p>
+Time signature changes are achieved by inserting or
+deleting measures. 
+
+The following starts a song with time signature of 6/8 (at measure 0)
+and change the time signature to 4/4 at measure 2 during 3 measures:
+
+</p><pre>g 0                     # go to measure 0
+mins 4 {6 8}            # insert 4 measures at 8/6
+g 2                     # move to measure 2
+mins 3 {4 4}            # insert 3 measure at 4/4
+m on                    # turn metronome on
+p                       # test it, i.e. start playback
+s                       # stop playback
+</pre>
+
+<p>
+To suppress measure number 2 (the first 4/4 measure)
+
+</p><pre>g 2                     # go to measure 2
+sel 1                   # select 1 measure
+mcut                    # remove it
+m on                    # switch the metronome on
+p                       # test it
+s                       #
+</pre>
+
+<p>
+To get the time signature at any given measure number, the 
+<a href="#func_msig">msig</a> function can be used.
+
+It returns the denominator and the numerator in a two integer list.
+
+For instance, to print the time signature at measure number 17:
+
+</p><pre>g 17                    # go to measure 17
+print [msig]            # print what msig returned      
+</pre>
+
+<p>
+A handy way to duplicate the time structure of a portion
+of the song is given by the <a href="#func_mdup">mdup</a> 
+function. It copies the current selection at another
+place of the song:
+
+</p><pre>g 17                    # go to measure 17
+sel 16                  # select 16 measures
+mdup 0                  # copy them behind the selection
+</pre>
+
+<p>
+The parameter to <a href="#func_mdup">mdup</a> is the number
+of measures to leave between the the original and the point
+where the replica is inserted.
+
+</p><h3><a name="section_7_4">7.4 Tempo changes</a></h3>
+
+<p>
+Tempo changes are achieved simply by moving within
+the song and using the
+``<a href="#func_t">t</a>'' command to change
+the tempo at the current position.
+
+The tempo must be provided in beats per minute. 
+
+For instance, the following changes tempo on measure 0 to 100 beats
+per minute and on measure 2 to 180 beats per minute.
+
+</p><pre>g 0                     # go to measure 0
+t 100                   # set tempo to 100 bpm
+g 2                     # go to measure 2
+t 180                   # set tempo to 180 bpm
+</pre>
+
+<p>
+To get the tempo at any given measure number, the <a href="#func_mtempo">mtempo</a> function can be used.
+
+It returns the tempo in beats per minute.
+
+For instance, to print the tempo at measure number 17:
+
+</p><pre>g 17                    # go to measure 17
+print [msig]            # print what mtempo returned
+</pre>
+
+
+<h2><a name="track">8 Tracks</a></h2>
+
+<p>
+A track is a piece of music, namely an ordered in time list
+of MIDI events. In play mode, midish play simultaneously
+all defined tracks, in record-mode it plays all defined tracks
+and records the current track.
+
+</p><p>
+Tracks aren't assigned to any particular device/channel; a track
+can contain MIDI data from any device/channel.
+
+A track can have its
+<i>current filter</i>; in this case, MIDI events
+are passed through that filter before being recorded.
+
+If the track has no current filter, then the song current filter is
+used instead. 
+
+If there is neither track current filter nor song current filter, then
+MIDI events from all devices are recorded as-is.
+
+</p><h3><a name="section_8_1">8.1 Recording a track without a filter</a></h3>
+
+<p>
+The following defines a track and record events
+as-is from all MIDI devices:
+
+</p><pre>[0000:00]&gt; tnew mytrack      # create a new track
+[0000:00]&gt; r                 # start recording
+[0003:02]&gt; s                 # stop
+</pre>
+
+<p>
+tracks are played as follows:
+
+</p><pre>[0000:00]&gt; p                 # start playback
+[0001:01]&gt; s                 # stop playback
+</pre>
+
+<p>
+However, with the above configuration this will not
+work as expected because events from the input
+keyboard (device number 1) will be recorded as-is and then
+sent back to the device number 1 instead of being sent
+to the sound module (device number 0).
+
+</p><h3><a name="section_8_2">8.2 Recording a track with a filter</a></h3>
+
+<p>
+The following creates a filter and uses it to
+record to the above track:
+
+</p><pre>[0000:00]&gt; fnew mypiano                      # create the filter
+[0000:00]&gt; fmap {any {1 0}} {any {0 0}}      # dev1/chan0 -&gt; dev0/chan0
+[0000:00]&gt; tnew mytrack                      # create the track
+[0000:00]&gt; r                                 # start recording
+[0001:03]&gt; s                                 # stop
+</pre>
+
+<p>
+This setup, is more suitable for multitracking. 
+
+The correct approach for multitracking is to create a filter for each
+musical instrument, and then to use this filter to record one or more
+tracks per instrument.
+
+</p><h3><a name="section_8_3">8.3 Basics about editing tracks</a></h3>
+
+<p>
+Most track editing functions use the project context, i.e.
+a set of ``current values'':
+
+</p><ul>
+
+<li>
+current track - the track that will be processed, it's selected
+with the ``<a href="#func_ct">ct</a>'' command.
+
+</li><li>
+current position - the measure number where processing will start.
+
+It's set using the ``<a href="#func_g">g</a>'' command
+
+</li><li>
+current selection - number of measures to process.
+It's set using the ``<a href="#func_sel">sel</a>'' command
+
+</li><li>
+current event set - events type that will be processed.
+
+It's set using the ``<a href="#func_ev">ev</a>'' command.
+
+Most of the time all events types need to be processed, but sometimes
+one might want to process only a subset (eg. only controller number
+7), leaving the rest as-is.
+
+</li><li>
+current quantization step - this defines how notes at the selection
+boundaries are handled.
+
+It's set using the ``<a href="#func_setq">setq</a>'' command.
+
+Using a quantization step allows to properly process events at the
+selection boundaries, by slightly enlarging the selection in order to
+select for processing events that would be outside the selection.
+
+</li></ul>
+
+<p>
+So editing tracks consists in modifying above parameters and issuing
+commands to process the current selection.
+
+</p><h3><a name="section_8_4">8.4 Copy, cut, insert</a></h3>
+
+<p>
+To clear the current selection of the current track:
+
+</p><pre>tclr
+</pre>
+
+<p>
+above command will clear only events matching the current 
+event type, which by defaults is set to ``any event''.
+
+To clear only controller number 7 of the current selection:
+
+</p><pre>ev {ctl {} 7}
+tclr
+</pre>
+
+<p>
+see the <a href="#ev_evspec">event set</a> section for more details.
+
+If you don't plan to continue working only on controller number 7
+events, then don't forget to revert the current event selection to the
+default value (which is ``{}'', all events).
+
+</p><p>
+To cut a piece of a track, for instance to cut 2 measures starting at
+measure number 5:
+
+</p><pre>g 5                     # move to measure 5
+sel 2                   # select 2 measures
+tcut                    # cut them
+</pre>
+
+<p>
+this command removes 2 measures of ``time'' from the current track;
+thus this will shift all measures following the current position by 2
+measures.
+
+</p><p>
+The following inserts 2 blank measures at
+measure number 3:
+
+</p><pre>g 3
+tins 2
+</pre>
+
+<p>
+similarly, since this commands insert time, this will shift all
+measures following the current position by 2 measures.
+
+<b>Note:</b> the <a href="#func_tcut">tcut</a> and 
+<a href="#func_tins">tins</a> functions cause a part 
+of the track to be shifted.
+
+If there are signature changes in the project, the track contents
+may no more correspond to the project's signature.
+
+The correct way of cutting or inserting a portion of the project is to
+use <a href="#func_mcut">mcut</a> and <a href="#func_mins">mins</a>,
+which preserve the signature.
+
+</p><p>
+The current selection of a track could be copied
+into another track.
+
+For instance the following will copy the current selection
+at measure 5 of track ``mypiano2''.
+
+</p><pre>tcopy           # copy current selection
+ct mypiano2     # change current track to ``mypiano2''
+g 5             # go to measure 5
+tpaste          # paste the copy
+</pre>
+
+<p>
+A complete portion of the project (all tracks and time structure
+included) can be copied with the <a href="#func_mdup">mdup</a>
+function. It copies the current selection and inserts it
+at the position given as argument to <a href="#func_mdup">mdup</a>.
+The argument is relative to the end of the current selection (if
+positive) or to the beginning of the current selection (if
+negative). Example:
+
+</p><pre>g 17            # go to measure 17
+sel 4           # select 4 measures
+mdup 0          # create 3 copies
+mdup 0
+mdup 0
+</pre>
+
+<h3><a name="section_8_5">8.5 Track quantization</a></h3>
+
+<p>
+A track can be quantized by rounding note-positions
+to the nearest exact position. The following
+will quantize the current selection of the current track
+by rounding notes to the nearest quarter note.
+
+</p><pre>setq 4          # quarter note = 1/4-th of a whole
+tquant 75
+</pre>
+
+<p>
+The last arguments gives the percent of quantization.
+100% means full quantization and 0% leans no
+quantization at all. This is useful because full quantization
+often sounds to regular especially on acoustic patches.
+
+</p><h3><a name="section_8_6">8.6 Checking a track</a></h3>
+
+<p>
+It is possible that a MIDI device transmits
+bogus MIDI data. The following scans the track
+and removes bogus notes
+and unused controller events:
+
+</p><pre>ct badtrack
+tcheck
+</pre>
+
+<p>
+This function can be useful to remove
+nested notes when a track is recorded twice (or more)
+without being erased.
+
+</p><h2><a name="frames">9 Frames, more about filtering and editing</a></h2>
+
+<p>
+In midish, MIDI events are packed into <i>frames</i>. For
+instance a note-on event followed by a note-off with the same
+note number constitute a <i>frame</i>. All filtering and
+editing functions work on frames, not on events. That means
+that all events within a frame are processed consistently. For
+instance, deleting a note-on event will also delete related
+note-off and key-aftertouch events. This ensures full
+consistency of tracks and MIDI I/O streams.
+
+</p><h3><a name="section_9_1">9.1 Note frames</a></h3>
+
+<p>
+Note frames are made of a starting "non" event any optional
+"kat" events and the stopping "noff" event. In editing functions
+note frames are copied/moved/deleted as a whole; they are never
+truncated. The starting event (note on) determines whether
+the frame is selected. For instance, in
+<a href="#func_tclr">tclr</a> function, only
+note frames whose "non" events are in the selected region
+are erased.
+
+</p><p>
+Conflicting note frames (i.e. with the same note number)
+are never merged. An attempt to copy a note frame on
+the top of a second one will erase the second one. This avoids
+having nested notes.
+
+</p><h3><a name="section_9_2">9.2 Pitch bend frames</a></h3>
+
+<p>
+A pitch bend frame is made of "bend" events. It starts with
+a "bend" event whose value is different from the default value
+(i.e. different from 0x3FFF). It stops when the value reaches
+the default value of 0x3FFF. In editing functions a "bend"
+frame may be truncated or split into multiple frames, however
+resulting frames always terminate with the default value. For
+instance, <a href="#func_tclr">tclr</a> may erase
+the middle of "bend" frame resulting in two new "bend" frames
+(the beginning and the ending of the old one).
+
+</p><p>
+Conflicting "bend" frames are merged. An attempt to copy a
+frame on top of another one will overwrite conflicting
+regions of the second one and "glue" the rest; this will
+result in a single frame, containing chunks of both original
+frames.
+
+</p><h3><a name="ctl_frames">9.3 Controller frames</a></h3>
+
+<p>
+The way controller events are packed in a frame depend
+on the controller type. Currently the following
+controllers are supported:
+
+</p><ul>
+
+<li>
+<b>Parameters:</b> this controller change a parameter
+of the channel but it doesn't have a special default
+value. For instance volume controller, reverb depth
+etc... These controllers are not packed together, they
+form single event frames. This is the default behavior
+for most controllers.
+
+</li><li>
+<b>Frames:</b> these are controllers that have special
+default value and that are packed in frames, similar
+to "bend" frames. For instance modulation wheel,
+sustain pedal. For those frames special care is taken
+in editing functions.
+
+</li></ul>
+
+<p>
+The user can specify for each controller number the desired
+behavior.
+The <a href="#func_ctlconf">ctlconf</a> function
+configures the controller. As arguments, it takes the name of
+the controller (an identifier) the controller number and the
+default value of the controller.
+If the default value is ``nil'' (i.e. no default value),
+then the controller is considered as of type <i>parameter</i>.
+For instance, following command:
+
+</p><pre>ctlconf expr 11 127
+</pre>
+
+<p>
+configures controller number 11 of type <i>frame</i> and with
+default value of 127. The controller name can be
+any identifier, it can be used for other functions to
+reference a controller.
+The <a href="#func_ctlconf">ctlinfo</a> function
+can be used to display the current configuration
+of all controllers:
+
+</p><pre>ctltab {
+        #
+        # name  number  defval
+        #
+        mod     1       0
+        vol     7       nil
+        sustain 64      0
+}
+</pre>
+
+<h3><a name="section_9_4">9.4 Other frames</a></h3>
+
+<p>
+Channel aftertouch events are packed in channel aftertouch
+frames. They behave exactly as pitch bender frames, except
+that the default value is zero.
+
+</p><p>
+Program/bank change, NRPN and RPN events are not packed
+together, they are single event frames.
+
+</p><h2><a name="sysex">10 System exclusive messages</a></h2>
+
+<p>
+Midish can send system exclusive messages
+to MIDI devices before starting performance mode.
+Typically, this feature can be used to change
+the configuration of MIDI devices. System
+exclusive (aka "sysex") messages are stored into
+named banks. To create a sysex bank named ``mybank'':
+
+</p><pre>xnew mybank
+</pre>
+
+<p>
+Then, messages can be added:
+
+</p><pre>xadd 0 {0xF0 0x7E 0x7F 0x09 0x01 0xF7}
+</pre>
+
+<p>
+This will store the "General-MIDI ON" messages into the
+bank. The second argument (here "0") is the device number
+to which the message will be sent when performance mode
+is entered.
+
+To send the latter messages to
+the corresponding device, just enter performance mode
+using the
+``<a href="#func_i">i</a>'' command.
+
+</p><p>
+Sysex messages can be recorded from
+MIDI devices, this is useful to save "bulk dumps"
+from synthesizers.
+
+Sysex messages are automatically recorded on the <i>current
+bank</i>. So, to record a sysex:
+
+</p><pre>cx mybank               # set current sysex bank
+r                       # start recording
+</pre>
+
+<p>
+The next time performance mode is entered, recorded
+sysex messages will be sent back to the device.
+
+Information about the recorded sysex messages
+can be obtained as follows:
+
+</p><pre>xinfo
+</pre>
+
+<p>
+A bank can be cleared by:
+
+</p><pre>xrm {}
+</pre>
+
+<p>
+the second argument is a (empty) pattern, that matches
+any sysex message in the bank. The following will remove
+only sysex messages starting with 0xF0 0x7E 0x7F:
+
+</p><pre>xrm {0xF0 0x7E 0x7F}
+</pre>
+
+<p>
+Sysex messages recorded from any device can be configured
+to be sent to other devices. To change the device number
+of all messages to 1:
+
+</p><pre>xsetd 1 {}
+</pre>
+
+<p>
+the second argument is an empty pattern, thus it matches
+any sysex message in the bank.
+
+The following will change the device number of only sysex messages
+starting with 0xF0 0x7E 0x7F:
+
+</p><pre>xsetd 1 {0xF0 0x7E 0x7F}
+</pre>
+
+<h2><a name="info">11 Obtaining information</a></h2>
+
+<p>
+The following functions gives some information
+about midish objects:
+
+</p><pre>ls              # summary
+minfo           # list tempo and signature  changes
+iinfo           # list config events of current input channel
+oinfo           # list config events of current output channel
+finfo           # list rules of current filter
+tinfo           # list events distribution of current track
+dinfo 0         # list device 0 properties
+</pre>
+
+<p>
+Objects can be listed as follows:
+
+</p><pre>print [tlist]   # print track list
+print [ilist]   # print named input channel list
+print [olist]   # print named output channel list
+print [flist]   # print filter list
+print [xlist]   # print sysex back list
+</pre>
+
+<p>
+Current values can be obtained as follows:
+
+</p><pre>print [getunit]         # ticks per whole note
+print [getpos]          # print current position
+print [getlen]          # print current selection length
+print [getf]            # current filter
+print [gett]            # current track
+print [getx]            # current sysex bank
+print [tgetf]           # default filter of current track
+</pre>
+
+<p>
+The device and the MIDI channel of a channel definition
+can be obtained as follows:
+
+</p><pre>print [igetc]           # print midi chan number of current input
+print [igetd]           # print device number of current input
+print [ogetc]           # print midi chan number of current output
+print [ogetd]           # print device number of current output
+</pre>
+
+<p>
+To check if object exists:
+
+</p><pre>print [iexists myinput]
+print [oexists myouput]
+print [fexists myfilt]
+print [texists mytrack]
+print [xexists mysx]
+</pre>
+
+<p>
+this will print 1 if the corresponding object exists
+and 0 otherwise.
+
+</p><h2><a name="save">12 Saving and loading songs</a></h2>
+
+<p>
+A song can be saved into a file as follows:
+
+</p><pre>save "myfile"
+</pre>
+
+<p>
+In a similar way, the song can be load from a file
+as follows:
+
+</p><pre>load "myfile"
+</pre>
+
+<p>
+All channel definitions, filters, tracks, their properties, and values
+of the current track, current filter are saved and restored.  However,
+note that the local settings (like device configuration, metronome
+settings) are not saved.
+
+</p><h2><a name="export">13 Import/export standard MIDI files</a></h2>
+
+<p>
+Standard MIDI files type 0 or 1 can be imported. Each
+track in the standard MIDI file corresponds to a track in midish.
+Tracks are named ``trk00'', ``trk01'', ...
+All MIDI events are assigned to device number 0. Only the following
+meta events are handled:
+
+</p><ul>
+
+<li>
+tempo changes
+
+</li><li>
+time signature changes
+
+</li></ul>
+
+<p>
+all meta-events are removed from the "voice" tracks and
+are moved into the midish's meta-track. Finally tracks
+are checked for anomalies. Example:
+
+</p><pre>import "mysong.mid"
+</pre>
+
+<p>
+Midish songs can be exported into standard MIDI files.
+Tempo changes and time signature changes are exported
+to a meta-track (first track of the MIDI file). Each
+channel definition is exported as a track containing
+the channel configuration events. Voice tracks
+are exported as is in separate tracks. Note that device
+numbers of MIDI events are not stored in the MIDI file
+because the file format does not allow this.
+Example:
+
+</p><pre>export "mysong.mid"
+</pre>
+
+<h2><a name="interpreter">14 The interpreter's language</a></h2>
+
+<p>
+Even to achieve some simple tasks with midish, it's
+sometimes necessary to write several long statements.  To
+make midish more usable, it suggested to use variables
+and/or to define procedures, as follows.
+
+</p><h3><a name="section_14_1">14.1 Global variables</a></h3>
+
+<p>
+Variables can be used to store numbers, strings and
+references to tracks, channels and filters, like:
+
+</p><pre>let x = 53              # store 53 into "x"
+print $x                # prints "53"
+</pre>
+
+<p>
+The ``let'' keyword is used to assign values to
+variables and the dollar sign (``$'') is used
+to obtain variable values.
+
+</p><h3><a name="section_14_2">14.2 Defining simple procedures</a></h3>
+
+<p>
+For instance, let
+us create a procedure named ``gmon'' that creates
+a sysex bank and stores a the standard sysex message
+to turn on General MIDI mode on device number 0:
+
+</p><pre>proc gmon {
+        xnew gm
+        xadd 0 { 0xF0 0x7E 0x7F 0x09 0x01 0xF7 }
+}
+</pre>
+
+<p>
+The ``proc'' keyword is followed by the procedure
+name ``gmon'' and then follows a list of statements between
+braces. 
+
+</p><p>
+Procedures can take arguments.  For instance, to improve
+above procedure to take the device number as argument:
+
+</p><pre>proc gmon devnum {
+        xnew gmon
+        xadd $devnum { 0xF0 0x7E 0x7F 0x09 0x01 0xF7 }
+}
+</pre>
+
+<p>
+After the name of the procedure follows the argument names list
+that can be arbitrary identifiers. The value of an argument
+is obtained by preceding the variable name by the dollar
+sign ("$"). 
+
+</p><p>
+A lot of similar procedures are defined in the
+sample ``midishrc'' file, shipped in the source
+tar-ball.
+
+</p><p>
+Procedure and variables definitions can be
+stored in the ``~/.midishrc'' file (or ``/etc/midishrc'').
+It will be automatically executed the next time you run midish.
+
+
+</p><h2><a name="changes">15 Changes</a></h2>
+
+<h3><a name="changes_02">15.1 Changes from release 0.1 to release 0.2</a></h3>
+
+<ul>
+
+<li>
+added ``device'' parameter to ``sendraw''
+
+</li><li>
+removed ``filtchangein'' and added: filtchgich,
+filtchgidev, filtswapich,
+filtswapidev, filtchgoch,
+filtchgodev, filtswapoch,
+filtswapodev.
+
+</li><li>
+added new filter rules:
+filtdevdrop,
+filtchandrop,
+filtctldrop,
+filtkeydrop.
+
+</li><li>
+added functions that remove existing rules:
+filtnodevdrop,
+filtnodevmap,
+filtnochandrop,
+filtnochanmap,
+filtnoctldrop,
+filtnoctlmap,
+filtnokeydrop,
+filtnokeymap.
+
+</li><li>
+added support for external MIDI synchronization,
+added: devsetmaster, devgetmaster, devsendrt
+
+</li><li>
+added
+trackdelete,
+chandelete,
+filtdelete
+
+</li><li>
+added
+trackrename,
+chanrename,
+filtrename
+
+</li><li>
+split ``changetnum'' into ``changetdev'' and ``changetch''
+
+</li><li>
+added ``chanset''
+
+</li><li>
+added <i>event ranges</i>, and an event range argument to
+``trackblank'' and
+``trackcopy''
+
+</li><li>
+removed support for single number channels.
+
+</li><li>
+added ``tracksetmute'' and ``trackgetmute''
+
+</li><li>
+added support for system exclusive messages; added
+sysexlist,
+sysexnew,
+sysexdelete,
+sysexrename,
+sysexexists,
+sysexinfo,
+sysexclear,
+sysexsetunit,
+sysexadd,
+songgetcursysex, 
+songsetcursysex.
+
+</li><li>
+removed ``tracksave'' and ``trackload''
+
+</li><li>
+removed support for gnu readline(3) library from midish,
+and created the ``rmidish'' utility, a front-end
+to midish using the readline(3) library.
+
+</li><li>
+added filters the ability to limit MIDI traffic
+(one controller, one bender, one aftertouch per tick)
+
+</li><li>
+make the filter drop duplicate controllers, pitch bends and
+aftertouches
+
+</li><li>
+added global and per filter current channel:
+songgetcurchan,
+songsetcurchan,
+filtgetcurchan,
+filtsetcurchan.
+
+</li><li>
+added global and per channel current input:
+songgetcurinput,
+songsetcurinput,
+changetcurinput,
+chansetcurinput.
+
+</li><li>
+added ``trackchanlist'' and improved ``songinfo''
+
+</li><li>
+added a MIDI file player and recorder: smfplay(1) and smfrec(1)
+
+</li></ul>
+
+<h3><a name="changes_03">15.2 Changes from release 0.2 to release 0.3</a></h3>
+
+<ul>
+
+<li>
+added ``tracktransp'' to transpose tracks
+
+</li><li>
+added ``trackmerge'' to merge two tracks
+
+</li><li>
+make rmidish run midish from the same directory where rmidish is
+located.
+
+</li><li>
+now multiple bender events are gathered together. So track editing
+functions (``trackcopy'' &amp; friends) always leave the bender
+in a neutral state.
+
+</li><li>
+improved ``trackcheck''
+
+</li><li>
+added ``exit'' keyword to exit midish
+
+</li><li>
+Added a ``mode'' argument to ``devattach'' function.  Now
+devices can be used in read-only or write-only mode (allowing to use
+named pipes as MIDI devices).
+
+</li><li>
+added basic support for the MIDI "Active Sensing" feature
+
+</li><li>
+make metronome click audible with non-percussive patches
+
+</li><li>
+save metronome settings
+
+</li><li>
+added tempo factor: ``songsetfactor'' and ``songgetfactor''
+
+</li><li>
+changed all track functions to gracefully handle nested notes,
+overlapping controllers/benders.
+
+</li><li>
+when entering real-time mode, midish restores states of all
+     controllers/benders corresponding to the current position
+
+</li><li>
+when leaving real-time mode midish release only notes that are
+sounding and reset only controllers that are touched instead of
+resetting all notes/controllers. This allows midish to better share
+MIDI devices with other sequencers.
+
+</li><li>
+added support for 14-bit controllers
+
+</li><li>
+added support for RPN/NRPN MIDI events.
+
+</li><li>
+split format 0 MIDI files into 16 tracks (one per MIDI channel)
+
+</li><li>
+made controller interpretation in editing functions configurable:
+ctlconf, ctlconfx, ctlunconf, ctlinfo.
+
+</li><li>
+added per-device controller precision selection (7-bit or 14-bit):
+devixctl, devoxctl.
+
+</li><li>
+added ``chanunconfev'' function to remove an event from a channel
+
+</li></ul>
+
+<h3><a name="changes_04">15.3 Changes from release 0.3 to release 0.4</a></h3>
+
+<ul>
+
+<li>
+added output MIDI merger, to avoid conflicts
+between tracks and MIDI input
+
+</li><li>
+simplifications: removed current input and filter's current channel
+attributes.
+
+</li><li>
+continuous controllers are merged more
+intelligently in performance mode, avoiding clipping
+
+</li><li>
+changed <i>all</i> functions to use internal context instead of taking
+dozens of parameters, while we're at it give them shorter names.
+
+Old functions are deprecated, they are still available for
+compatibility.
+
+Below is the list of new functions:
+
+
+<p>
+ci, co, geti, geto, cx, getx, setunit, getunit, goto, getpos, sel,
+getlen, setq, getq, fac, getfac, ct, gett, cf, getf, mute, unmute,
+getmute, ls, save, load, reset, export, import, idle, play, rec, stop,
+tempo, mins, mcut, mdup, minfo, mtempo, msig, mend, ctlconf, ctlconfx, ctlunconf,
+ctlinfo, metro, metrocf, tlist, tnew, tdel, tren, texists, taddev,
+tsetf, tgetf, tcheck, tcut, tins, tclr, tpaste, tcopy, tmerge, tquant,
+ttransp, tclist, tinfo, ilist, olist, iexists, oexists, inew, onew,
+idel, odel, iren, oren, iset, oset, igetc, ogetc, igetd, ogetd,
+iaddev, oaddev, irmev, ormev, iinfo, oinfo, flist, fnew, fdel, fren,
+fexists, finfo, freset, fmap, funmap, ftransp, fvcurve,
+fchgin, fchgout, fswapin,
+fswapout, xlist, xexists, xnew, xdel, xren, xinfo, xrm,
+xsetd, xadd, dnew, ddel, dclkrx, dclktx, dclkrate, dinfo, dixctl,
+doxctl
+
+
+</p></li><li>
+output channels are no more the only to be named and/or configured. Now
+input channels can be named too.
+
+</li><li>
+added
+``<a href="#func_msig">msig</a>'' and
+``<a href="#func_mtempo">mtempo</a>''
+functions returning time signature and
+tempo respectively at the current position
+
+</li><li>
+added
+``<a href="#func_err">err</a>''
+function to print an error message and stop the
+interpreter execution flow.
+
+</li><li>
+added ``current event set'' in the context and associated
+``<a href="#func_ev">ev</a>''
+function. All track editing functions use it.
+
+</li><li>
+greatly simplified the filter: more features with less code and
+concepts. The filter can map any event set to any other set. So all
+mapping can be created with a single
+<a href="#func_fmap">fmap</a> function.
+
+</li><li>
+added a new ``integer range'' data type, useful to define event sets.
+
+</li><li>
+added a new metronome mode ``rec'' to turn on the metronome only in
+record mode.
+
+</li><li>
+switched to multithreaded performance mode, meaning that the prompt
+is available during performance mode.
+
+</li><li>
+added new messages for front ends allowing to get asynchronously the
+current position. Updated rmidish to use it to display the current
+position in the prompt.
+
+</li><li>
+make <a href="#func_tcopy">tcopy</a> copy selection into a
+hidden temporary track and add
+<a href="#func_tcopy">tpaste</a>
+to paste it at the current position.
+
+</li><li>
+added basic readline completion of built-in functions to rmidish.
+
+</li><li>
+add <a href="#func_ftransp">ftransp</a> command to
+transpose output easily.
+
+</li><li>
+add <a href="#func_fvcurve">fvcurve</a> command to
+adjust note velocity.
+
+</li><li>
+add <a href="#func_mend">mend</a> function to return the end of the
+song (i.e. the first unused measure).
+
+</li><li>
+make <a href="#func_mins">mins</a> and <a href="#func_mcut">mcut</a> 
+modify all tracks, not only the time structure.
+
+</li><li>
+add <a href="#func_mdup">mdup</a> function to copy portions of
+the project preserving its time structure.
+
+</li><li>
+added built-in filter to output channels, so there's no more need
+to create filter for every channel.
+
+</li></ul>
+
+<h3><a name="section_15_4">15.4 Changes from release 0.4 to release 1.0</a></h3>
+
+<ul>
+
+<li>
+removed all legacy functions
+
+</li><li>
+added <a href="#func_tevmap">tevmap</a> function to transform
+a set of events of a track into another set (eg. to change the 
+device number).
+
+</li><li>
+allow midish to synchronize to a MTC source, meaning that it can
+be used with audio applications.
+
+Added <a href="#func_dmtcrx">dmtcrx</a> function.
+
+</li><li>
+send MMC start, stop and relocate messages allowing
+MMC-capable audio applications to be controlled from
+midish.
+
+Added <a href="#func_dmmctx">dmmctx</a> function.
+
+</li></ul>
+
+<h3><a name="section_15_5">15.5 Changes from release 1.0 to release 1.1</a></h3>
+
+<ul>
+
+<li>
+print data returned by functions not called in an expression
+
+</li><li>
+make <a href="#func_tinfo">tinfo</a> display only current selection
+
+</li><li>
+switch to ISC <a href="#copyright">license</a>
+
+</li><li>
+make <a href="#func_iset">iset</a> and <a href="#func_oset">oset</a>
+update all filters to use the new setting.
+
+</li><li>
+make <a href="#func_save">save</a>, <a href="#func_load">load</a>,
+<a href="#func_export">export</a> and <a href="#func_import">import</a>
+stop performance rather that complaining.
+
+</li><li>
+add <a href="#func_version">version</a> function to display midish version
+
+</li><li>
+in verbose mode, add message for playback completion
+
+</li><li>
+add <a href="#func_diev">diev</a>
+and <a href="#func_diev">doev</a> functions to control whether
+midish interprets bank select, NRPN/RPN and data entry controllers.
+
+</li><li>
+add <a href="#func_ximport">ximport</a>
+and <a href="#func_xexport">xexport</a> to export and import .syx files.
+
+</li><li>
+add support for user-defined events and the corresponding
+<a href="#func_evpat">evpat</a> and
+<a href="#func_evinfo">evinfo</a> functions.
+
+</li></ul>
+
+<h2><a name="attributes">16 Project attributes</a></h2>
+
+<h3><a name="section_16_1">16.1 Device attributes</a></h3>
+
+<p>
+The following table summarizes the device attributes:
+
+</p><p>
+
+
+
+attribute
+
+description
+
+<table border="1">
+
+<tbody><tr></tr><tr>
+
+<td>device number
+
+</td><td>integer that is used to reference the device
+
+</td></tr><tr>
+
+<td>clkrate
+
+</td><td>number of ticks per whole note, default is 96, which corresponds
+to the MIDI standard
+
+</td></tr><tr>
+
+<td>clock ``tx'' flag
+
+</td><td>
+boolean; if it is set, the real-time MIDI clock events
+(like start, stop, ticks) are transmitted to the MIDI device.
+
+</td></tr><tr>
+
+<td>ixctlset
+
+</td><td>
+list of continuous controllers that are expected to be
+received with 14-bit precision.
+
+</td></tr><tr>
+
+<td>oxctlset
+
+</td><td>list of continuous controllers that will be transmitted
+with 14-bit precision
+
+</td></tr><tr>
+
+<td>iev
+
+</td><td>list of compound event types the device transmits;
+it's a subset of ``xpc'', ``nrpn'', ``rpn''.
+
+</td></tr><tr>
+
+<td>oev
+
+</td><td>list of compound event types the device accepts;
+it's a subset of ``xpc'', ``nrpn'', ``rpn''.
+
+</td></tr></tbody></table>
+
+</p><h3><a name="section_16_2">16.2 Channel attributes</a></h3>
+
+<p>
+The following table summarizes the channel attributes:
+
+</p><p>
+
+
+
+attribute
+
+description
+
+<table border="1">
+
+<tbody><tr></tr><tr>
+
+<td>name
+
+</td><td>identifier used to reference the channel
+
+</td></tr><tr>
+
+<td>{dev&nbsp;chan}
+
+</td><td>device and MIDI channel where events are sent to or
+received to
+
+</td></tr><tr>
+
+<td>conf
+
+</td><td>events that are sent when performance mode is entered
+
+</td></tr></tbody></table>
+
+</p><h3><a name="section_16_3">16.3 Filter attributes</a></h3>
+
+<p>
+The following table summarizes the filter attributes:
+
+</p><p>
+
+
+
+attribute
+
+description
+
+<table border="1">
+
+<tbody><tr></tr><tr>
+
+<td>name
+
+</td><td>identifier used to reference the filter
+
+</td></tr><tr>
+
+<td>rules set
+
+</td><td>set of rules that handle MIDI events
+
+</td></tr></tbody></table>
+
+
+</p><h3><a name="section_16_4">16.4 Track attributes</a></h3>
+
+<p>
+The following table summarizes the track attributes:
+
+</p><p>
+
+
+
+attribute
+
+description
+
+<table border="1">
+
+<tbody><tr></tr><tr>
+
+<td>name
+
+</td><td>identifier used to reference the track
+
+</td></tr><tr>
+
+<td>mute flag
+
+</td><td>if true then the track is silent during playback
+
+</td></tr><tr>
+
+<td>current filter
+
+</td><td>
+default filter. The track is recorded with this filter. If there is no
+current filter, then is is recorded with the song's default filter.
+
+</td></tr></tbody></table>
+
+</p><h3><a name="section_16_5">16.5 Sysex attributes</a></h3>
+
+<p>
+The following table summarizes the sysex back attributes:
+
+</p><p>
+
+
+
+attribute
+
+description
+
+<table border="1">
+
+<tbody><tr></tr><tr>
+
+<td>name
+
+</td><td>identifier used to reference the sysex back
+
+</td></tr><tr>
+
+<td>list of messages
+
+</td><td>
+each message in the list contains the actual message and the device
+number to which the message has to be sent.
+
+</td></tr></tbody></table>
+
+</p><h3><a name="section_16_6">16.6 Song attributes</a></h3>
+
+<p>
+The following table summarizes the song attributes:
+
+</p><p>
+
+
+
+attribute
+
+description
+
+<table border="1">
+
+<tbody><tr></tr><tr>
+
+<td>meta track
+
+</td><td>a track containing tempo changes and time signature changes
+
+</td></tr><tr>
+
+<td>ticks_per_unit
+
+</td><td>
+number of MIDI ticks per whole note, the default value is 96 which
+corresponds to the MIDI standard.
+
+</td></tr><tr>
+
+<td>tempo_factor
+
+</td><td>number by which the tempo is multiplied on play and record.
+
+</td></tr><tr>
+
+<td>metronome mode
+
+</td><td>
+can be ``on'', ``off'' or ``rec'', 
+see ``<a href="#func_m">m</a>'' command.
+
+</td></tr><tr>
+
+<td>metro_hi
+
+</td><td>
+a note-on event that is sent on the beginning of every measure if the
+metronome is enabled
+
+</td></tr><tr>
+
+<td>metro_lo
+
+</td><td>
+a note-on event that is sent on the beginning of every beat if the
+metronome is enabled
+
+</td></tr><tr>
+
+<td>current track
+
+</td><td>default track: the track that will be recorded in record mode
+
+</td></tr><tr>
+
+<td>current filter
+
+</td><td>
+default filter. The filter with which the default track is recorded if
+it hasn't its default filter.
+
+</td></tr><tr>
+
+<td>current input
+
+</td><td>
+default input channel. This value isn't used in real-time, however it can be
+used as default value when adding new rules to the filter.
+
+</td></tr><tr>
+
+<td>current output
+
+</td><td>
+default output channel. This value isn't used in real-time, however it can be
+used as default value when adding new rules to the filter.
+
+</td></tr><tr>
+
+<td>current position
+
+</td><td>
+current position (in measures) within the song. Playback and record
+start from this positions. It is also user as the beginning of the
+current selection
+
+</td></tr><tr>
+
+<td>current selection
+
+</td><td>length (in measures) of the current selection.
+This value isn't used in real-time,
+however it is used as default value in track
+editing functions.
+
+</td></tr><tr>
+
+<td>current quant step
+
+</td><td>
+current quantization step.  This value isn't used in
+real-time, however it's used as default value for the track
+editing functions
+
+</td></tr><tr>
+
+<td>current event set
+
+</td><td>current event selection
+This value isn't used in real-time,
+however it is used as default value for
+the track editing functions
+
+</td></tr></tbody></table>
+
+</p><h2><a name="language">17 Language reference</a></h2>
+
+<h3><a name="section_17_1">17.1 Lexical structure</a></h3>
+
+<p>
+The input line is split into tokens:
+
+</p><ul>
+
+<li>
+Identifiers<br>
+
+an identifier is a sequence of up to 32
+characters, digits and underscores (``_'').
+However, an identifier cannot start with a
+digit. Examples:
+
+<pre>mytrack _mytrack  my34_track23          # good
+123mytrack                              # bad, starts with digit
+mytrackabcdefghijklmnopqrstuvwxyz       # bad, to long
+</pre>
+
+</li><li>
+Numbers<br>
+
+numbers should be in decimal or hex format and may
+not exceed 2^31. Hex numbers are preceded
+by "0x", as in the C language. Examples:
+
+<p>
+
+    token       value
+
+<table border="1">
+
+<tbody><tr></tr><tr>    <td>123         </td><td>123 in decimal
+
+</td></tr><tr>    <td>0x100       </td><td>256 in hex
+
+</td></tr><tr>    <td>0xF0        </td><td>240 in hex
+
+</td></tr></tbody></table>
+
+</p></li><li>
+String constants<br>
+
+string constants are sequence of printable
+characters enclosed in pairs of double quotes.
+Thus a string cannot contain double quotes,
+tabs, newlines.
+
+</li><li>
+Keywords<br>
+
+valid keywords are: nil, let, if, else, for, in,
+return, exit and proc.
+
+</li><li>
+Operators, separators etc...<br>
+
+sequences of meta-characters like ``('', ``)'',
+``+'', ``$'', newline character,
+``;'',  etc...
+
+</li><li>
+Comments<br>
+
+comments are ignored, they start with ``#''
+and end with the new line
+character.
+
+</li></ul>
+
+<p>
+Multiple lines ending with ``\'' are parsed as a
+single line. Anything else generates a ``bad token'' error.
+
+
+</p><h3><a name="section_17_2">17.2 Statements</a></h3>
+
+<p>
+Any input line can be ether a function definition or a
+statement.
+
+Most statements end with the ``;''
+character.  However, in order to improve
+interactivity, the newline character can be used
+instead. Thus, the newline character cannot be
+used as a space.
+
+A statement can be:
+
+</p><ul>
+
+<li>
+A procedure call, example:
+
+<pre>myproc arg1 arg2
+</pre>
+
+
+</li><li>
+An assignment using the ``let'' keyword,
+examples:
+
+<pre>let x = 123
+let y = 1 + 2 * (3 + x)
+</pre>
+
+The left-hand side should be the name of
+a variable and the right hand side an
+expression (see the expression section).
+
+</li><li>
+An ``if..else'' statement, example:
+
+<pre>if $i {
+        print "i is not zero";
+} else {
+        print "i is zero";
+}
+</pre>
+
+<p>
+the ``else'' and the second block are
+not mandatory. Note that since newline
+character is interpreted as a ``;'', the
+line cannot be broken in an arbitrary
+way. If the expression following the ``if''
+keyword is true the first block is executed,
+otherwise the second one (if any) is executed. The
+expression is evaluated in the following way:
+
+</p><p>
+    expression          bool. value
+<table border="1">
+<tbody><tr></tr><tr>    <td>non-zero integer    </td><td>true
+</td></tr><tr>    <td>zero integer        </td><td>false
+</td></tr><tr>    <td>non-empty list      </td><td>true
+</td></tr><tr>    <td>empty list          </td><td>false
+</td></tr><tr>    <td>non-empty string    </td><td>true
+</td></tr><tr>    <td>empty string        </td><td>false
+</td></tr><tr>    <td>any name            </td><td>true
+</td></tr><tr>    <td>nil                 </td><td>false
+</td></tr></tbody></table>
+
+</p></li><li>
+A loop over a list:
+
+<pre>for i in {"bli" "bla" "blu"} {
+        print $i;
+}
+</pre>
+
+<p>
+the block is executed for each value
+of the list to which ``$i'' is set.
+
+</p></li><li>
+A return statement. The return statement ends
+the procedure execution and returns a
+value to the caller. Example:
+
+<pre>return $x * $x;
+</pre>
+
+</li><li>
+An exit statement. The exit statement ends
+the execution of the current script.
+It takes no arguments. Example:
+
+<pre>exit
+</pre>
+
+</li></ul>
+
+<h3><a name="section_17_3">17.3 Expressions</a></h3>
+
+<p>
+An expression can be an arithmetic expression of constants,
+expressions, variable values, return values of
+function calls.
+
+The following constant types are supported:
+
+</p><p>
+
+    token                                type
+
+<table border="1">
+
+<tbody><tr></tr><tr>    <td>``"this is a string"''         </td><td> a string
+
+</td></tr><tr>    <td>``12345''                      </td><td> a number
+
+</td></tr><tr>    <td>``mytrack''                    </td><td> a reference
+
+</td></tr><tr>    <td>``nil''                        </td><td> has no value
+
+</td></tr></tbody></table>
+
+</p><p>
+Variable are referenced by their identifier.
+Value of a variable is obtained with the ``$''
+character.
+
+</p><pre>let i = 123             # puts 123 in i
+print $i                # prints the value of i
+</pre>
+
+<p>
+The following operators are recognized:
+
+</p><p>
+
+
+oper.       usage               associativity
+                
+<table border="1">
+
+<tbody><tr></tr><tr>
+
+<td>{}          </td><td>list definition     </td><td rowspan="3">left to right
+
+</td></tr><tr>
+
+<td>()          </td><td>grouping
+
+</td></tr><tr>
+
+<td>[]          </td><td>function call       
+
+</td></tr><tr>    
+
+<td>!           </td><td>logical NOT         </td><td rowspan="3">right to left
+
+</td></tr><tr>
+
+<td>~           </td><td>bitwise NOT
+
+</td></tr><tr>
+
+<td>-           </td><td>unary minus
+
+</td></tr><tr>
+
+<td>*           </td><td>multiplication      </td><td rowspan="3">left to right
+
+</td></tr><tr>
+
+<td>/           </td><td>division            
+
+</td></tr><tr>
+
+<td>%           </td><td>reminder            
+
+</td></tr><tr>
+
+<td>+           </td><td>addition            </td><td rowspan="2">left to right
+
+</td></tr><tr>
+
+<td>-           </td><td>subtraction         
+
+</td></tr><tr>
+
+<td>&lt;&lt;    </td><td>left shift          </td><td rowspan="2">left to right
+
+</td></tr><tr>
+
+<td>&gt;&gt;    </td><td>right shift
+
+</td></tr><tr>
+
+<td>&lt;        </td><td>less                </td><td rowspan="4">left to right
+
+</td></tr><tr>
+
+<td>&lt;=       </td><td>less or equal
+
+</td></tr><tr>
+
+<td>&gt;        </td><td>greater
+
+</td></tr><tr>
+
+<td>&gt;=       </td><td>greater or equal
+
+</td></tr><tr>
+
+<td>==          </td><td>equal               </td><td rowspan="2">left to right
+
+</td></tr><tr>
+
+<td>!=          </td><td>not equal
+
+</td></tr><tr>
+
+<td>&amp;       </td><td>bitwise AND         </td><td rowspan="3">left to right
+
+</td></tr><tr>
+
+<td>^           </td><td>bitwise XOR
+
+</td></tr><tr>
+
+<td>|           </td><td>bitwise OR
+
+</td></tr><tr>
+
+<td>&amp;&amp;  </td><td>logical AND         </td><td rowspan="2">left to right
+
+</td></tr><tr>
+
+<td>||          </td><td>logical OR
+
+</td></tr><tr>
+
+<td>..          </td><td>range definition    </td><td>left to right
+
+</td></tr></tbody></table>
+
+</p><p>
+Examples:
+
+</p><pre>2 * (3 + 4) + $x
+</pre>
+
+<p>
+is an usual integer arithmetic expression.
+
+</p><pre>[tlist]
+</pre>
+
+<p>
+is the returned value of the procedure
+``<a href="#func_tlist">tlist</a>''.
+
+</p><pre>12..56
+</pre>
+
+<p>
+is the range of integer between 12 and 65 (included).
+
+</p><pre>{"bla" 3 zer}
+</pre>
+
+<p>
+is a list containing the string ``"bla"'' the integer
+3 and the name ``zer''. A list is a set of
+expressions separated by spaces and enclosed between
+braces, a more complicated example is:
+
+</p><pre>{"hello" 1+2*3 mytrack $i [myproc] {a b c}}
+</pre>
+
+<h3><a name="section_17_4">17.4 Procedure definition</a></h3>
+
+<p>
+A procedure is defined with the keyword
+``proc'' followed by the name of the procedure,
+the names of its arguments and a block containing
+its body, example:
+
+</p><pre>proc doubleprint x y {
+        print $x
+        print $y
+}
+</pre>
+
+<p>
+Arguments and variables defined within a procedure
+are local to that procedure
+and may shadow a global variable with the same
+name. The return value is given to the caller
+with a ``return'' statement:
+
+</p><pre>proc square x {
+        return $x * $x
+}
+</pre>
+
+<h2><a name="functs">18 Function reference</a></h2>
+
+<h3><a name="func_track">18.1 Track functions</a></h3>
+
+<dl>
+
+<dt><a name="func_tlist">tlist</a>
+
+</dt><dd>
+return the list of names of the tracks in the song
+example:
+
+<pre>print [tlist]
+</pre>
+
+</dd><dt><a name="func_tnew">tnew trackname</a>
+
+</dt><dd>
+create an empty track named ``trackname''
+
+</dd><dt><a name="func_tdel">tdel</a>
+
+</dt><dd>
+delete the current track.
+
+</dd><dt><a name="func_tren">tren newname</a>
+
+</dt><dd>
+change the name of the current track to ``newname''
+
+</dd><dt><a name="func_texists">texists trackname</a>
+
+</dt><dd>
+return 1 if ``trackname'' is a track, 0 otherwise
+
+</dd><dt><a name="func_taddev">taddev measure beat tick ev</a>
+
+</dt><dd>
+put the event ``ev'' on the current track
+at the position given by ``measure'',
+``beat'' and ``tick''
+
+</dd><dt><a name="func_tsetf">tsetf filtname</a>
+
+</dt><dd>
+set the default filter (for recording) of
+the current track to ``filtname''. It will
+be used in performace mode if there is no current filter.
+
+</dd><dt><a name="func_tgetf">tgetf</a>
+
+</dt><dd>
+return the default filter (for recording)
+of the current track, returns ``nil'' if none
+
+</dd><dt><a name="func_tcheck">tcheck</a>
+
+</dt><dd>
+check the current track for orphaned notes,
+nested notes and other anomalies; also
+removes multiple controllers in the same tick
+
+</dd><dt><a name="func_tcut">tcut</a>
+
+</dt><dd>
+cut the current selection of the current track.
+
+</dd><dt><a name="func_tclr">tclr</a>
+
+</dt><dd>
+clear the current selection of the current track.
+only events matching the current event selection
+(see <a href="#func_ev">ev</a> function) are
+removed.
+
+</dd><dt><a name="func_tins">tins amount</a>
+
+</dt><dd>
+insert ``amount'' empty measures in the
+current track, at the current position.
+
+</dd><dt><a name="func_tpaste">tpaste</a>
+
+</dt><dd>
+copy the hidden temporary track (filled by
+<a href="#func_tcopy">tcopy</a>)
+on the current position of the current track.
+the current event selection
+(see <a href="#func_ev">ev</a> function)
+are copied
+
+</dd><dt><a name="func_tcopy">tcopy</a>
+
+</dt><dd>
+copy the current selection of the current track
+into a hidden temporary track.
+Only events matching
+the current event selection
+(see <a href="#func_ev">ev</a> function)
+are copied
+
+
+</dd><dt><a name="func_tquant">tquant rate</a>
+
+</dt><dd>
+quantize the current selection of the current track using
+the current quantization step
+(see <a href="#func_ev">setq</a> function).
+Note positions
+are rounded to the nearest tick multiple of the quantization step;
+Rate must be between 0 and 100: 0 means no
+quantization and 100 means full quantization.
+
+</dd><dt><a name="func_ttransp">ttransp halftones</a>
+
+</dt><dd>
+transpose note events of current selection of the current track,
+by ``halftones'' half tones.
+Only events matching the current event selection
+(see <a href="#func_ev">ev</a> function)
+are transposed.
+
+</dd><dt><a name="func_tevmap">tevmap evspec1 evspec2</a>
+
+</dt><dd>
+convert events matching evspec1 (source) into events matching
+evspec2 (destination) in the current selection of the current
+track.
+Both evspec1 and evspec2 must have the same number of devices,
+channels, notes, controllers etc..
+
+</dd><dt><a name="func_tmerge">trackmerge sourcetrack</a>
+
+</dt><dd>
+merge the ``sourcetrack'' into
+the current track
+
+</dd><dt><a name="func_mute">mute trackname</a>
+
+</dt><dd>
+Mute the given track, i.e. events from ``trackname''
+will not be played during record/playback.
+
+</dd><dt><a name="func_unmute">unmute trackname</a>
+
+</dt><dd>
+Unmute the given track, i.e. events from ``trackname''
+will be played during record/playback.
+
+</dd><dt><a name="func_getmute">getmute trackname</a>
+
+</dt><dd>
+Return 1 if the given track is muted and 0 otherwise.
+
+</dd><dt><a name="func_tclist">tclist</a>
+
+</dt><dd>
+Return the list of channels used by events stored in the
+current track.
+
+</dd><dt><a name="func_tinfo">tinfo</a>
+
+</dt><dd>
+scan the current selection of the current track, an for each
+measure display the number of events that match the current
+event selection
+
+</dd></dl>
+
+<h3><a name="func_input">18.2 Input functions</a></h3>
+
+<dl>
+
+<dt><a name="func_inew">inew channelname {dev midichan}</a>
+
+</dt><dd>create an new channel named ``channelname''
+and assigned the given device and MIDI channel.
+
+</dd><dt><a name="func_iset">iset {dev midichan}</a>
+
+</dt><dd>
+set the device/channel pair of the current channel.
+All filters are updated to use the new channel setting
+as if the appropriate <a href="#func_fchin">fchin</a>
+function was invoked for each filter.
+
+</dd><dt><a name="func_idel">idel</a>
+
+</dt><dd>
+delete current channel.
+
+</dd><dt><a name="func_iren">iren newname</a>
+
+</dt><dd>
+rename the current channel to ``newname''
+
+</dd><dt><a name="func_iexists">iexists channelname</a>
+
+</dt><dd>
+return 1 if ``channelname'' is a channel, 0 otherwise
+
+</dd><dt><a name="func_igetc">igetc</a>
+
+</dt><dd>
+return the MIDI channel number of the current channel
+
+
+</dd><dt><a name="func_igetd">igetd channelname</a>
+
+</dt><dd>
+return the device number of the current channel
+
+</dd><dt><a name="func_iaddev">iaddev event</a>
+
+</dt><dd>
+add the event to the configuration of the current
+channel, it's not used yet.
+
+</dd><dt><a name="func_irmev">irmev evspec</a>
+
+</dt><dd>
+remove all events matching ``evspec''
+(see event <a href="#ev_evspec">ranges</a>)
+from the configuration of the current channel
+
+</dd><dt><a name="func_iinfo">iinfo</a>
+
+</dt><dd>
+print all events on the config
+of the current channel.
+
+</dd></dl>
+
+<h3><a name="func_output">18.3 Output functions</a></h3>
+
+<dl>
+
+<dt><a name="func_onew">onew channelname {dev midichan}</a>
+
+</dt><dd>create an new channel named ``channelname''
+and assigned the given device and MIDI channel.
+
+Output channels contain a built-in filter having the same name; by
+defaut it maps all inputs to the newly created output channel.
+
+</dd><dt><a name="func_oset">oset {dev midichan}</a>
+
+</dt><dd>
+set the device/channel pair of the current channel.
+All filters are updated to use the new channel setting
+as if the appropriate <a href="#func_fchout">fchout</a>
+function was invoked for each filter.
+
+</dd><dt><a name="func_odel">odel</a>
+
+</dt><dd>
+delete current channel.
+
+</dd><dt><a name="func_oren">oren newname</a>
+
+</dt><dd>
+rename the current channel to ``newname''
+
+</dd><dt><a name="func_oexists">iexists channelname</a>
+
+</dt><dd>
+return 1 if ``channelname'' is a channel, 0 otherwise
+
+</dd><dt><a name="func_ogetc">ogetc</a>
+
+</dt><dd>
+return the MIDI channel number of the current channel
+
+
+</dd><dt><a name="func_ogetd">ogetd channelname</a>
+
+</dt><dd>
+return the device number of the current channel
+
+</dd><dt><a name="func_oaddev">oaddev event</a>
+
+</dt><dd>
+add the event to the configuration of the current
+channel, it's not used yet.
+
+</dd><dt><a name="func_ormev">ormev evspec</a>
+
+</dt><dd>
+remove all events matching ``evspec''
+(see event <a href="#ev_evspec">ranges</a>)
+from the configuration of the current channel
+
+</dd><dt><a name="func_oinfo">oinfo</a>
+
+</dt><dd>
+print all events on the config
+of the current channel.
+
+</dd></dl>
+
+<h3><a name="func_filt">18.4 Filter functions</a></h3>
+
+<dl>
+
+<dt><a name="func_fnew">fnew filtname</a>
+
+</dt><dd>
+create an new filter named ``filtname''
+
+</dd><dt><a name="func_filtdelete">fdel filtname</a>
+
+</dt><dd>
+delete the current filter.
+
+
+</dd><dt><a name="func_filtrename">fren newname</a>
+
+</dt><dd>
+rename the current filter to ``newname''
+
+</dd><dt><a name="func_fexists">fexists filtname</a>
+
+</dt><dd>
+return 1 if ``filtname'' is a filter, 0 otherwise
+
+</dd><dt><a name="func_freset">freset</a>
+
+</dt><dd>
+remove all rules from the current filter.
+
+</dd><dt><a name="func_finfo">finfo</a>
+
+</dt><dd>
+list all fitering rules of the current filter
+
+</dd><dt><a name="func_fchgin">fchgin old_evspec new_evspec</a>
+
+</dt><dd>
+rewrite all filtering rules of the current
+filter to consume ``new_evspec'' events instead of
+``old_evspec'' events.
+This means that each rule that would consume ``old_evspec''
+on the input will start consuming ``new_evspec'' instead.
+
+</dd><dt><a name="func_fswapin">fswapin evspec1 evspec2</a>
+
+</dt><dd>
+Similar to <a href="#func_fchgin">fchgin</a> but swap
+``evspec1'' and ``evspec2'' in the source events 
+set of each rule.
+
+</dd><dt><a name="func_fchgout">fchgout old_evspec new_evspec</a>
+
+</dt><dd>
+rewrite all filtering rules of the current
+filter to produce ``new_evspec'' events instead of
+``old_evspec'' events.
+This means that each rule that would produce ``old_evspec''
+on the output will start producing ``new_evspec'' instead.
+
+</dd><dt><a name="func_fswapout">fswapout evspec1 evspec2</a>
+
+</dt><dd>
+Similar to <a href="#func_fchgout">fchgout</a> but swap
+``evspec1'' and ``evspec2'' in the destination events
+set of each rule.
+
+</dd><dt><a name="func_fmap">fmap evspec1 evspec2</a>
+
+</dt><dd>
+add a new rule to the current filter, to make it
+convert events matching evspec1 (source) into events matching
+evspec2 (destination).
+Both evspec1 and evspec2 must have the same number of devices,
+channels, notes, controllers etc..
+
+</dd><dt><a name="func_funmap">funmap evspec1 evspec2</a>
+
+</dt><dd>
+remove event maps from the current filter. Any
+mapping with source included in evspec1 and destination
+inluded in evspec2 is deleted.
+
+</dd><dt><a name="func_ftransp">ftransp evspec halftones</a>
+
+</dt><dd>
+transpose events generated by the filter and matching ``evspec''
+by the give number of halftones
+
+</dd><dt><a name="func_fvcurve">fvcurve evspec weight</a>
+
+</dt><dd>
+adjusts velocity of note events produced by the filter, using
+the given ``weight'' in the -63..63 range.  If ``weight''
+is:
+
+<ul>
+
+<li> negative - sensitivity is decreased
+
+</li><li> positive - sensitivity is increased
+
+</li><li> zero - the velocity is unchanged
+
+</li></ul>
+
+</dd></dl>
+
+<h3><a name="func_sysex">18.5 System exclusive messages functions</a></h3>
+
+<dl>
+
+<dt><a name="func_xnew">xnew sysexname</a>
+
+</dt><dd>
+create a new bank of sysex messages named ``sysexname''
+
+</dd><dt><a name="func_xdel">xdel</a>
+
+</dt><dd>
+delete the current bank of sysex messages.
+
+</dd><dt><a name="func_xren">xren newname</a>
+
+</dt><dd>
+rename the current sysex bank to ``newname''
+
+</dd><dt><a name="func_xexists">xexists sysexname</a>
+
+</dt><dd>
+return 1 if ``sysexname'' is a sysex bank, 0 otherwise
+
+</dd><dt><a name="func_xrm">xrm pattern</a>
+
+</dt><dd>
+remove all sysex messages starting with ``pattern''
+from the current sysex bank. The given pattern
+is a list of bytes; an empty pattern matches any
+sysex message.
+
+</dd><dt><a name="func_xsetd">xsetd newdev pattern</a>
+
+</dt><dd>
+set device number to ``newdev''
+on all sysex messages starting with ``pattern''
+in the current sysex bank. The given pattern
+is a list of bytes; an empty pattern matches any
+sysex message.
+
+
+</dd><dt><a name="func_xadd">xadd devnum data</a>
+
+</dt><dd>
+add to the current sysex bank
+a new sysex message. ``data'' is a list containing the
+MIDI system exclusive message and ``devname'' is the device number to which
+the message will be sent when performance mode is entered
+
+</dd><dt><a name="func_xinfo">xinfo</a>
+
+</dt><dd>
+print all sysex messages of the current sysex bank. Messages that are
+too long to be desplayed on a single line are truncated and 
+the ``...'' string is displayed.
+
+</dd><dt><a name="func_ximport">ximport devnum path</a>
+
+</dt><dd>
+replace contents of the current sysex bank by
+contents of the given .syx file; messages are assigned
+to ``devnum'' device number.
+
+</dd><dt><a name="func_xexport">xexport path</a>
+
+</dt><dd>
+store contents of the current sysex bank in the
+given .syx file
+
+</dd></dl>
+
+<h3><a name="func_rt">18.6 Real-time functions</a></h3>
+
+<dl>
+
+<dt><a name="func_i">i</a>
+
+</dt><dd>
+enter ``idle'' performance mode. Start
+processing MIDI input and generating MIDI output.
+data passes through the current filter (if any)
+or through the current track's filter (if any).
+
+</dd><dt><a name="func_p">p</a>
+
+</dt><dd>
+play the song from the current position.
+Input passes through the current filter (if any)
+or through the current track's filter (if any).
+
+</dd><dt><a name="func_r">r</a>
+
+</dt><dd>
+play the song and record the input.
+Input passes through the current filter (if any)
+or through the current track's filter (if any). On startup,
+this function play one measure of countdown before
+the data start being recorded.
+
+</dd><dt><a name="func_s">s</a>
+
+</dt><dd>    
+stop performance and release MIDI devices. I.e. stop the effect 
+``<a href="#func_i">i</a>'',
+``<a href="#func_p">p</a>'' or
+``<a href="#func_r">r</a>'' functions;
+
+
+</dd><dt><a name="func_sendraw">sendraw device arrayofbytes</a>
+
+</dt><dd>
+send raw MIDI data to device number ``device'',
+for debugging purposes only.
+
+</dd></dl>
+
+<h3><a name="func_song">18.7 Song functions</a></h3>
+
+<dl>
+
+<dt><a name="func_ev">ev evspec</a>
+
+</dt><dd>
+set the current event selection. Most track editing
+functions will act only on events matching "evspec",
+ignoring all other events.
+
+</dd><dt><a name="func_setq">setq step</a>
+
+</dt><dd>
+set the current quantization step to the given note
+value, as follow:
+
+<ul>
+
+<li>4 - quarter note
+
+</li><li>6 - quarter note triplet
+
+</li><li>8 - eighth note
+
+</li><li>12 - eighth note triplet
+
+</li><li>16 - sixteenth note
+
+</li><li>24 - sixteenth note triplet
+
+</li><li>etc...
+
+</li></ul>
+
+<p>
+The quantization step will be used by <a href="#func_tquant">tquant</a>
+function and also by all editing functions to optimize event
+selection. If the special ``nil'' value is specified as quantization
+step, then quatization is disabled.
+
+</p></dd><dt><a name="func_getq">getq</a>
+
+</dt><dd>
+return the current quatization step
+
+</dd><dt><a name="func_g">g measure</a>
+
+</dt><dd>
+set the current song position pointer to
+the given measure number. Record and playback
+will start a that position. This also defines
+the beginning of the current selection used
+by most track editing functions.
+
+</dd><dt><a name="func_getpos">getpos</a>
+
+</dt><dd>
+return the current song position pointer which
+is also the start position of the current selection.
+
+</dd><dt><a name="func_sel">sel length</a>
+
+</dt><dd>
+set the length of the current selection to
+``length'' measures. The current selection
+start at the current position set with the 
+``<a href="#func_g">g</a>'' function.
+
+</dd><dt><a name="func_getlen">getlen</a>
+
+</dt><dd>
+return the length (in measures) of the current selection.
+
+</dd><dt><a name="func_ct">ct trackname</a>
+
+</dt><dd>
+set the current track. The current track
+is the one that will be recorded. Most track editing
+functions act on it.
+
+</dd><dt><a name="func_gett">gett</a>
+
+</dt><dd>
+return the current track (if any) or ``nil''
+
+</dd><dt><a name="func_cf">cf filtname</a>
+
+</dt><dd>
+set the current filter to ``filtname''.
+The current filter
+is the one used to process
+input MIDI events in performance mode.
+It's also the one affected
+by all filter editing functions. 
+
+</dd><dt><a name="func_getf">getf</a>
+
+</dt><dd>
+return the current filter
+or ``nil'' if none
+
+</dd><dt><a name="func_cx">cx sysexname</a>
+
+</dt><dd>
+set the current sysex bank,
+i.e. the one that will be recorded. The current
+sysex back is the one affected by all sysex
+editing functions.
+
+</dd><dt><a name="func_getx">getx</a>
+
+</dt><dd>
+return the current sysex bank
+or ``nil'' if none
+
+</dd><dt><a name="func_ci">ci channame</a>
+
+</dt><dd>
+set the current (named) input channel. All input channel
+editing functions will act on it. 
+
+</dd><dt><a name="func_geti">geti</a>
+
+</dt><dd>
+return the name of the current input channel
+or ``nil'' if none
+
+</dd><dt><a name="func_co">co channame</a>
+
+</dt><dd>
+set the current (named) output channel. All output channel
+editing functions will act on it. 
+
+</dd><dt><a name="func_geto">geto</a>
+
+</dt><dd>
+return the name of the current output channel
+or ``nil'' if none
+
+</dd><dt><a name="func_setunit">setunit ticks_per_unit</a>
+
+</dt><dd>
+set the time resolution of the sequencer to ``tpu''
+ticks in a whole note (1 unit note = 4 quarter notes). 
+The default is 96 ticks, which is the
+default of the MIDI standard.
+
+</dd><dt><a name="func_getunit">getunit</a>
+
+</dt><dd>
+return the number of ticks in a whole note
+
+</dd><dt><a name="func_fac">fac tempo_factor</a>
+
+</dt><dd>
+set the tempo factor for play and record to the given
+integer value. The tempo factor must be between 50 (play
+half of the real tempo) and 200 (play at twice the real
+tempo).
+
+</dd><dt><a name="func_getfac">getfac</a>
+
+</dt><dd>
+return the current tempo factor
+
+</dd><dt><a name="func_t">t beats_per_minute</a>
+
+</dt><dd>
+set the tempo at the current song position
+
+</dd><dt><a name="func_mins">mins amount {num denom}</a>
+
+</dt><dd>
+insert ``amount'' blank measures at the
+current song position.
+The time signature used is num/denom.
+If the time signature is an empty list (i.e. ``{}'')
+then the time signature at the current position
+is used.
+
+</dd><dt><a name="func_mcut">mcut</a>
+
+</dt><dd>
+cut the current selection of all tracks, including the
+time structure.
+
+</dd><dt><a name="func_mdup">mdup where</a>
+
+</dt><dd>
+duplicate the current selection inserting a copy
+of it at the position given by the ``where'' parameter.
+The target position is a measure number relative to the
+current selection to be copied. 
+
+If ``where'' is positive it's relative to the end of the current
+selection; if it's negative it's relative to the beginning of the
+current selection.  
+
+</dd><dt><a name="func_minfo">minfo</a>
+
+</dt><dd>
+print the meta-track (tempo changes, time signature
+changes.
+
+</dd><dt><a name="func_mtempo">mtempo</a>
+
+</dt><dd>
+Return the tempo at the current song position. The unit
+is beats per minute.
+
+</dd><dt><a name="func_msig">msig</a>
+
+</dt><dd>
+Return the time signature at the current song position. The result
+is a two number list: numerator and denominator.
+
+</dd><dt><a name="func_mend">mend</a>
+
+</dt><dd>
+Return the ending measure of the song (i.e. its size in measures).
+
+</dd><dt><a name="func_ls">ls</a>
+
+</dt><dd>
+list all tracks, channels, filters and
+various default values
+
+</dd><dt><a name="func_save">save filename</a>
+
+</dt><dd>
+save the song into the given file. The ``filename''
+is a quoted string.
+
+</dd><dt><a name="func_load">load filename</a>
+
+</dt><dd>
+load the song from a file named ``filename''.
+the current song is destroyed, even if
+the load command fails.
+
+</dd><dt><a name="func_reset">reset</a>
+
+</dt><dd>
+destroy completely the song, useful to
+start a new song without restarting the
+program
+
+</dd><dt><a name="func_export">export filename</a>
+
+</dt><dd>
+save the song into a standard MIDI file, ``filename''
+is a quoted string.
+
+</dd><dt><a name="func_import">import filename</a>
+
+</dt><dd>
+load the song from a standard MIDI file, ``filename''
+is a quoted string. Only MIDI file ``type 1'' and
+``type 0'' are supported.
+
+</dd></dl>
+
+<h3><a name="func_dev">18.8 Device functions</a></h3>
+
+<dl>
+
+<dt><a name="func_dlist">dlist</a>
+
+</dt><dd>
+return the list of attached devices
+(list of numbers)
+
+</dd><dt><a name="func_dnew">dnew devnum filename mode</a>
+
+</dt><dd>
+attach MIDI device ``filename'' as
+device number ``devnum''; ``filename''
+is a quoted string. The ``mode'' argument
+is the name of the mode, it can be on if the following:
+
+<ul>
+
+<li>
+``ro'' - read-only, for input only devices
+
+</li><li>
+``wo'' - write-only, for output only devices
+
+</li><li>
+``rw'' - read and write.
+
+</li></ul>
+
+<p>
+If midish is configured to use ALSA (default on Linux systems) then
+``filename'' should contain the ALSA sequencer port, as listed by
+``aseqdump -l'', (eg. ``28:0'', ``FLUID Synth (qsynth)'').
+
+If ``nil'' is given instead of the path, then the port is not
+connected to any existing port; this allows other ALSA sequencer
+clients to subscribe to it and to provide events to midish or to
+consume events midish sends to it.
+
+</p></dd><dt><a name="func_ddel">ddel devnum</a>
+
+</dt><dd>
+detach device number ``devnum''
+
+</dd><dt><a name="func_dmtcrx">dmtcrx devnum</a>
+
+</dt><dd>
+use device number ``devnum'' as MTC source.
+
+In this case, midish will relocate, start and stop according to
+incoming MTC messages.
+
+Midish will generate its clock ticks from MTC, meaning that it will
+run at the same speed as the MTC device.
+
+This is useful to synchronize midish to an audio multi-tracker or any
+MTC capable audio application.
+
+If ``devnum'' is ``nil'', then MTC messages are ignored and the
+internal timer will be used instead.
+
+</dd><dt><a name="func_dmmctx">dmmctx { devnum1 devnum2 ... }</a>
+
+</dt><dd>
+Configure the given devices to transmit MMC start, stop
+and relocate messages.
+Useful to control MMC-capable audio applications
+from midish.
+By default, devices transmit MMC.
+
+</dd><dt><a name="func_dclktx">dclktx { devnum1 devnum2 ... }</a>
+
+</dt><dd>
+Configure the given devices to transmit MIDI clock information
+(MIDI ticks, MIDI start and MIDI stop events). Useful
+to synchronize an external sequencer to midish.
+
+</dd><dt><a name="func_dclkrx">dclkrx devnum</a>
+
+</dt><dd>
+set device number ``devnum'' to be the master MIDI clock source.
+It will give midish MIDI ticks, MIDI start and MIDI stop events. This
+useful to synchronize midish to an external sequencer.
+If ``devnum'' is
+``nil'', then the internal clock will be used and midish
+will act as master device.
+
+</dd><dt><a name="func_dclkrate">dclkrate devnum ticrate</a>
+
+</dt><dd>
+set the number of ticks in a whole note that are transmitted
+to the MIDI device (if <a href="#func_dclktx">dclktx</a> was called
+for it). Default value is 96 ticks. This is the standard MIDI value and
+its not recommended to change it.
+
+</dd><dt><a name="func_dinfo">dinfo devnum</a>
+
+</dt><dd>
+Print some information about the MIDI device.
+
+</dd><dt><a name="func_dixctl">dixctl devnum list</a>
+
+</dt><dd>
+Setup the list of controllers that are expected to
+be received as 14-bit numbers (i.e. both coarse and fine
+MIDI controller messages will be expected). By default
+only coarse values are used, if unsure
+let this list empty.
+
+</dd><dt><a name="func_doxctl">devoxctl devnum list</a>
+
+</dt><dd>
+Setup the list of controllers that will be transmitted
+as 14-bit numbers (both coarse and fine MIDI controller messages).
+
+</dd><dt><a name="func_diev">diev devnum list</a>
+
+</dt><dd>
+Configure the device to process as a single event the following
+patterns of input MIDI messages.
+
+<ul>
+
+<li>
+``xpc'' - group bank select controllers (0 and 32) with program
+changes into a signle ``xpc'' event.
+
+</li><li>
+``nrpn'' - group NRPN controllers (98 and 99) with data entry
+controllers (6 and 38) into a single ``nrpn'' event.
+
+</li><li>
+``rpn'' - same as ``nrpn'', but for RPN controllers (100 and 101).
+
+</li></ul>
+
+By default all of the above are enabled, which allows banks, NRPNs
+and RPNs to be handled by midish the standard way.
+
+It makes sense to disable grouping of above messages on rare hardware
+that maps above-mentioned controller numbers (0, 6, 32, 38, 98, 99,
+100, 101) to other parameters than bank number and NRPN/RPN.
+
+</dd><dt><a name="func_doev">doev devnum list</a>
+
+</dt><dd>
+Same as <a href="#func_doev">diev</a> but for output MIDI
+messages.
+
+</dd></dl>
+
+<h3><a name="func_ev">18.9 Event functions</a></h3>
+
+<dl>
+
+<dt><a name="func_ctlconf">ctlconf ctlname ctlnumber defval</a>
+
+</dt><dd>
+Configure controller number ``ctlnumber'' with name
+``ctlname'', and default value ``defval''.
+If defval is ``nil''
+then there is no default value and corresponding
+controller events are not grouped into frames.
+See sec. <a href="#ctl_frames">Controller frames</a>.
+
+</dd><dt><a name="func_ctlconfx">ctlconfx ctlname ctlnumber defval</a>
+
+</dt><dd>
+Same as <a href="#func_ctlconfx">ctlconf</a> function,
+but for 14-bit controllers. Thus defval is in the
+range 0..16383.
+
+</dd><dt><a name="func_ctlunconf">ctlconf ctlname</a>
+
+</dt><dd>
+Unconfigure the given controller. ``ctlname'' is
+the identifier that was used with
+<a href="#func_ctlconf">ctlconf</a>
+
+</dd><dt><a name="func_ctlinfo">ctlinfo</a>
+
+</dt><dd>
+Print the list of configured controllers
+
+</dd><dt><a name="func_evpat">evpat name sysex_pattern</a>
+
+</dt><dd>
+Define a new event type corresponding to the given system exclusive
+message pattern.
+
+The pattern is a list of bytes or event parameter identifiers (aka
+atoms).
+
+The following atoms are supported: v0, v0_lo, v0_hi, v1, v1_lo, v1_hi.
+
+They correspond to the full 7-bit value (coarse parameter), the low
+7-bit nibble and the high 7-bit nibble (fine grained parameters) of
+the first and second parameters respectively.
+
+Example:
+
+<pre>evpat master {0xf0 0x7f 0x7f 0x04 0x01 v0_lo v0_hi 0xf7}
+</pre>
+
+defines a new event type for the standard master volume system
+exclusive message.
+
+</dd><dt><a name="func_evinfo">evinfo</a>
+
+</dt><dd>
+Print the list of event patterns.
+
+</dd></dl>
+
+<h3><a name="func_misc">18.10 Misc. functions</a></h3>
+
+<dl>
+
+<dt><a name="func_m">m mode</a>
+
+</dt><dd>
+Set the mode of the metronome. The following modes
+are available:
+
+<ul>
+
+<li>
+``on'' - turned on for both playback and record
+
+</li><li>
+``rec'' - turned on for record only
+
+</li><li>
+``off'' - turned off
+
+</li></ul>
+
+</dd><dt><a name="func_metrocf">metrocf eventhi eventlo</a>
+
+</dt><dd>
+select the notes that the metronome plays. The
+pair of events must be note-ons
+
+</dd><dt><a name="func_info">info</a>
+
+</dt><dd>
+display the list of built-in and user-defined
+procedures and global variables
+
+</dd><dt><a name="func_print">print expression</a>
+
+</dt><dd>
+display the value of the expression
+
+</dd><dt><a name="func_err">err string</a>
+
+</dt><dd>
+display the given string and abort the
+statement being executed.
+
+</dd><dt><a name="func_h">h funcname</a>
+
+</dt><dd>
+display list of arguments function ``funcname''
+
+</dd><dt><a name="func_exec">exec filename</a>
+
+</dt><dd>
+read and executes the script from a file, ``filename''
+is a quoted string. The execution of the script is aborted
+on error. If the script executes an exit statement, only
+the script is terminated.
+
+</dd><dt><a name="func_debug">debug flag val</a>
+
+</dt><dd>
+set debug-flag ``flag'' to (integer) value ``val''.
+It's a developer knob.
+If ``val=0'' the corresponding debug-info are
+turned off. ``flag'' can be:
+
+<ul>
+
+<li>
+``filt'' - show events passing through the current filter
+
+</li><li>
+``mididev'' - show raw MIDI traffic on stderr
+
+</li><li>
+``mixout'' - show conflicts in the output MIDI merger 
+
+</li><li>
+``norm'' - show events in the input normalizer
+
+</li><li>
+``pool'' - show pool usage on exit
+
+</li><li>
+``song'' - show start/stop events
+
+</li><li>
+``timo'' - show timer internal errors
+
+</li><li>
+``mem'' - show memory usage
+
+</li></ul>
+
+</dd><dt><a name="func_version">version</a>
+
+</dt><dd>
+Display midish version.
+
+</dd><dt><a name="func_panic">panic</a>
+
+</dt><dd>
+Cause the sequencer to core-dump,
+useful to developpers.
+
+</dd><dt><a name="func_proclist">proclist</a>
+
+</dt><dd>
+Return the list of all user defined procs.
+
+</dd><dt><a name="func_builtinlist">builtinlist</a>
+
+</dt><dd>
+Return a list of all builtin commands.
+
+</dd></dl>
+
+<h2><a name="section_19">19 Using midish in other programs</a></h2>
+
+<h3><a name="section_19_1">19.1 Creating scripts: batch mode</a></h3>
+
+<p>
+Midish could be used from general purpose scripting languages to do
+MIDI-related tasks.
+
+This is accomplished by starting the ``midish'' binary and writing
+commands to it's standard input.
+
+To ease this process, midish should be started in
+<i>batch mode</i>, with the <b>-b</b> flag.
+
+In batch mode the ``~/.midishrc'' and ``/etc/midishrc''
+files are not parsed, errors cause midish to exit, and 
+``<a href="#func_p">p</a>'', 
+``<a href="#func_r">r</a>'' and 
+``<a href="#func_i">i</a>'' commands are blocking.
+
+</p><p>
+For instance the following simple shell script will play, on the
+``/dev/rmidi1'' device, standard midi files enumerated on the command
+line:
+
+
+</p><pre>#!/bin/sh
+
+trap : 2
+
+for arg; do
+midish -b &lt;&lt;END
+dnew 0 "/dev/rmidi1" wo
+import "$arg"
+p
+END
+done
+</pre>
+
+<p>
+The ``smfplay'' and ``smfrec'' files shipped in the source tar-balls
+are examples of such scripts.
+
+</p><h3><a name="section_19_2">19.2 Creating front-ends: verbose mode</a></h3>
+
+<p>
+A program that wants to use a midish feature, may start midish
+and issue commands on its standard input. Then, the standard
+output of midish could be parsed so the program can obtain the
+desired information (if any).
+
+</p><p>
+To ease this process, the midish binary can be
+started with the <b>-v</b> flag; in this case it will write
+additional information on its standard output, allowing the
+caller to be notified of changes of the state of midish. The
+information is written on a single line starting with the
+<b>+</b> sign, as follows:
+
+</p><ul>
+
+<li>
+<b>+ready</b><br> means that midish is ready to
+parse and execute a new line. A front-end should
+always wait for this string before issuing any command.
+
+</li><li>
+<b>+pos measure beat tick</b><br> is written
+during performace mode on every beat, it gives the current
+song position.
+
+</li></ul>
+
+<p>
+No midish function (like <a href="#func_print">print</a>) can
+generate a line starting with the <b>+</b> sign, so it is safe
+to assume that such lines are synchronization lines and not
+the output of a function.  Furthermore, such lines will never
+appear in the middle of the output of a function.  Additional
+information may be available in the same format in future
+versions of midish; thus front-ends should be able to ignore
+unknown lines starting with <b>+</b>.
+
+</p><p>
+Generally, any front-end should use a loop similar
+to the following:
+
+</p><pre>while (!eof) {
+        command = get_command_from_user();
+        wait_for("+ready");
+        write_to_midish_stdin(command);
+        result = parse_midish_stdout();
+        do_something(result);
+}
+</pre>
+
+<p>
+The ``rmidish'' program shipped in the source tar-ball is
+and example of such front-end.
+
+</p><h2><a name="midishrc">20 Sample midishrc-file</a></h2>
+
+<p>
+The sample midishrc file shipped in the source tar-balls
+contains a lot of examples of procedure definitions.
+
+</p><dl>
+
+<dt>ctldrop ictl
+
+</dt><dd>
+make the current filter drop controller number ``ictl''
+on the current input
+        
+
+</dd><dt>ctlmap ictl octl
+
+</dt><dd>
+make the current filter route controller number
+``ictl'' on the current input
+to controller ``octl'' on the current channel
+        
+</dd><dt>solo
+
+</dt><dd>
+mute all tracks but current
+        
+
+</dd><dt>nomute
+
+</dt><dd>
+unmute all tracks.
+        
+
+</dd><dt>gmon devnum
+
+</dt><dd>
+create a new gmon sysex back and 
+generate a ``general midi on'' system exclusive message
+for device number ``devnum'' and store it
+to the current sysex bank.
+        
+
+</dd><dt>gmp patch
+
+</dt><dd>
+configures the current channel
+to use general MIDI patch number ``patch''.
+(this will send program change event when
+performance mode is entered).
+        
+
+</dd><dt>vol value
+
+</dt><dd>
+set volume (controller number 7) of
+the current channel
+        
+
+</dd><dt>reverb value
+
+</dt><dd>
+set reverb (controller number 91) of
+the current channel
+        
+
+</dd><dt>chorus value
+
+</dt><dd>
+set chorus (controller number 93) of
+the current channel
+        
+
+</dd><dt>rpn addr val
+
+</dt><dd>
+set registered parameter number (RPN) ``addr''
+for the current channel to ``val''. Both ``addr''
+and ``val'' are integers in the range 0..16383.
+        
+
+</dd><dt>nrpn addr val
+
+</dt><dd>
+set not registered parameter number (NRPN) ``addr''
+for the current channel to ``val''. Both ``addr''
+and ``val'' are integers in the range 0..16383.
+        
+</dd></dl>
+
+<h2><a name="example">21 Example sessions</a></h2>
+
+<h3><a name="section_21_1">21.1 Example - MIDI filtering</a></h3>
+
+<p>
+The following session show how to
+configure a keyboard split:
+
+</p><pre>send EOF character (control-D) to quit
+[0000:00]&gt; inew kbd {1 0}
+[0000:00]&gt; onew bass {0 5}
+[0000:00]&gt; oaddev {pc bass 33}
+[0000:00]&gt; onew piano {0 6}
+[0000:00]&gt; oaddev {pc piano 2}
+[0000:00]&gt; fnew split
+[0000:00]&gt; fmap {any kbd} {any bass}
+[0000:00]&gt; fmap {any kbd} {any piano}
+[0000:00]&gt; fmap {note kbd 12..62} {note bass 0..50}
+[0000:00]&gt; fmap {note kbd 63..127} {note piano 63..127}
+[0000:00]&gt; finfo
+{
+        evmap any {1 0} &gt; any {0 5}
+        evmap any {1 0} &gt; any {0 6}
+        evmap note {1 0} 12..62 &gt; note {0 5} 0..50
+        evmap note {1 0} 63..127 &gt; note {0 6} 63..127
+}
+[0000:00]&gt; i
+[0000:00]&gt; s
+[0000:00]&gt; save "piano-bass"
+</pre>
+
+<p>
+First we set the default input to device 1, channel 6, on
+which the keyboard is available.  Then we define 2
+named-channels ``bass'' on device 0, channel 5 and
+``piano'' on device 0 channel 6.  Then we assign patches
+to the respective channels. After this, we define a new filter
+``split'' and we add rules corresponding to the
+keyboard-split on note number 62 (note D3), the bass is
+transposed by -12 half-tones (one octave).
+
+</p><h3><a name="section_21_2">21.2 Example - recording a track</a></h3>
+
+<p>
+The following session show how to
+record a track.
+
+</p><pre>send EOF character (control-D) to quit
+[0000:00]&gt; inew kbd {1 0}                    # select default input channel
+[0000:00]&gt; onew drums {0 9}                  # create drum channel
+[0000:00]&gt; tnew dr1                          # create track ``dr1''
+[0000:00]&gt; t 90                              # tempo to 90 bpm
+[0000:00]&gt; r                                 # start recording
+[0003:03]&gt; s                                 # stop
+[0000:00]&gt; setq 16                           # set quantization step
+[0000:00]&gt; sel 32                            # select 32 measures
+[0000:00]&gt; tquant 75                         # quantize to 75%
+[0000:00]&gt; p                                 # play
+[0001:02]&gt; s                                 # stop playing
+[0000:00]&gt; save "myrythm"                    # save to a file
+[0000:00]&gt;                                   # hit ^D to quit
+</pre>
+
+<p>
+first, we set the default input channel to ``{1 0}'' (default channel
+of the keyboard).
+
+Then, we define the ``drum'' channel on device 0, channel 9, this
+creates a default filter that maps ``kbd'' to ``drums''.
+
+Then we define a new track named ``dr1'' an we start recording.
+
+Then, we set the quantization step to 16 (sixteenth note), we select
+the first 32 measures of the track and we quantize them. Finally, we
+start playback and we save the song into a file.
+
+</p><h2><a name="copyright">22 Copyright</a></h2>
+
+
+
+<p>
+Copyright (c) 2003-2010 Alexandre Ratchov &lt;alex<i>@</i>caoua.org&gt;<br>
+Copyright (c) 2008 Willem van Engen &lt;wvengen<i>@</i>stack.nl&gt;<br>
+
+</p><p>
+Permission to use, copy, modify, and distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+</p><p>
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+
+
+
+</p><h2><a name="section_23">23 Thanks</a></h2>
+
+<p>
+Many thanks to all who contributed (new features, bug fixes, bug
+reports, packaging efforts and other improvements):
+
+Julien Claassen,
+Karim Saddem,
+Marcell Mars,
+Richard L. Hamilton,
+Samuel Mimram,
+Will Woodruff,
+and
+Willem van Engen.
+
+</p><p>
+<i>
+Copyright (c) 2003-2012 Alexandre Ratchov<br>
+Last updated dec 17, 2012
+</i>
+
+
+
+</p></div></body></html>
