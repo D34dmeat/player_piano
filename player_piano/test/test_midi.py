@@ -3,8 +3,7 @@ import os
 import time
 
 def play_pause_test():
-    m = Midi(os.path.expanduser("~/git/player_piano/midi_files"))
-    m.startup()
+    m = Midi(library_path=os.path.expanduser("~/git/player_piano/midi_files"))
     m.load_track("test.mid")
     m.play()
     time.sleep(5)
@@ -17,3 +16,9 @@ def play_pause_test():
     m.play()
     time.sleep(5)
     m.stop()
+
+def play_test():
+    m = Midi(os.path.expanduser("~/git/player_piano/midi_files"))
+    m.load_track("test.mid")
+    m.play()
+    m.play_thread.join()

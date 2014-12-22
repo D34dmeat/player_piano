@@ -11,6 +11,7 @@ import base64
 class Artist(Item):
     url = Field()
     playlists = Field()
+    name = Field()
 
 class PianomidiDeSpider(CrawlSpider):
     name = 'pianomidi_de'
@@ -18,20 +19,30 @@ class PianomidiDeSpider(CrawlSpider):
     start_urls = ['http://www.piano-midi.de/midi_files.htm']
     
     rules = (
-        Rule(LinkExtractor(restrict_xpaths="//table[@class='midi']"), follow=False, callback='parse_artist'),)
+        Rule(LinkExtractor(restrict_xpaths="//table[@class='midi']"), follow=False, callback='parse_artist', process_links='parse_start_page'),)
+    
+    def parse_start_page(self, links):
+        # Collect artist names
+        self.artist_links = {} #link -> artist name
+        print(repr(links))
+        for l in links:
+            self.artist_links[l.url] = l.text.replace("\n"," ")
+        return links
 
     def parse_artist(self, response):
         artist = Artist()
         artist['url'] = response.url
+        artist['name'] = self.artist_links[response.url]
+
         playlists = []
         for sel in response.xpath("//h2"):
-            playlist_title = sel.xpath("text()").extract()[0]
+            playlist_title = sel.xpath("text()").extract()[0].replace("\n", " ")
             entries_table = sel.xpath("following-sibling::table")[0]
             tracks = []
             for row in entries_table.xpath("tr")[1:]:
                 track = {}
                 cols = row.xpath("td")
-                track['title'] = cols[0].xpath('a/text()').extract()[0]
+                track['title'] = cols[0].xpath('a/text()').extract()[0].replace("\n", " ")
                 track['midi_url'] = cols[0].xpath('a/@href').extract()[0]
                 try:
                     track['tempo'] = cols[1].xpath('text()').extract()[0]

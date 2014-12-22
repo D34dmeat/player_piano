@@ -6,7 +6,10 @@ requires = (
     'Flask-Script',
     'daemonize',
     'Flask-SQLAlchemy',
-    'Flask-Restless'
+    'Flask-Restless',
+    'nose',
+    'pexpect',
+    'requests'
 )
 
 setup(

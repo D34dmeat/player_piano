@@ -2,3 +2,5 @@
 env
 *.egg-info
 .#*
+midi_store/
+player_piano.db

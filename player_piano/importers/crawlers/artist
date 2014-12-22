@@ -1,0 +1,57 @@
+{
+  "num_results": 26,
+  "objects": [
+    {
+      "id": 1,
+      "name": "Alb\u00e9niz,   Isaac",
+      "tracks": []
+    },
+    {
+      "id": 2,
+      "name": "Tchaikovsky,   Peter",
+      "tracks": []
+    },
+    {
+      "id": 3,
+      "name": "Rachmaninov,   Sergey",
+      "tracks": []
+    },
+    {
+      "id": 4,
+      "name": "Sinding,   Christian",
+      "tracks": []
+    },
+    {
+      "id": 5,
+      "name": "Mussorgsky,   Modest",
+      "tracks": []
+    },
+    {
+      "id": 6,
+      "name": "Ravel,   Maurice",
+      "tracks": []
+    },
+    {
+      "id": 7,
+      "name": "Schubert,   Franz",
+      "tracks": []
+    },
+    {
+      "id": 8,
+      "name": "Mozart,   Wolfgang Amadeus",
+      "tracks": []
+    },
+    {
+      "id": 9,
+      "name": "Schumann,   Robert",
+      "tracks": []
+    },
+    {
+      "id": 10,
+      "name": "Moszkowski,   Moritz",
+      "tracks": []
+    }
+  ],
+  "page": 1,
+  "total_pages": 3
+}
