@@ -19,12 +19,12 @@ def main():
             pl_title = playlist['title']
             print("\t"+pl_title)
 
-            collection = api.post('collection', {'name':pl_title, 'artists':[{'id':artist_obj['id']}]})
+            collection = api.post('collection', {'name':pl_title, 'artist':{'id':artist_obj['id']}})
 
             for t in playlist['tracks']:
                 t_title = t['title']
                 print("\t\t"+t_title)
-                track = api.post('track', {'title': t_title, 'artists':[{'id': artist_obj['id']}], 'collection': {'id': collection['id']}})
+                track = api.post('track', {'title': t_title, 'collection': {'id': collection['id']}})
                 with open("www.piano-midi.de/"+t['midi_url'], 'rb') as f:
                     midi = base64.b64encode(f.read()).decode("utf-8")
                 track = api.put('track/{}'.format(track['id']), {'midi': midi})

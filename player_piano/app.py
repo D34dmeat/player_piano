@@ -31,25 +31,17 @@ class AppModel():
     def as_dict(self):
        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
-artist_tracks = db.Table('artist_tracks',
-                         db.Column('artist_id', db.Integer, db.ForeignKey('artist.id')),
-                         db.Column('track_id', db.Integer, db.ForeignKey('track.id')))
-
-artist_collections = db.Table('artist_collections',
-                         db.Column('artist_id', db.Integer, db.ForeignKey('artist.id')),
-                         db.Column('collection_id', db.Integer, db.ForeignKey('collection.id')))
-
 class Artist(db.Model, AppModel):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Unicode)
-    tracks = db.relationship('Track', secondary=artist_tracks, backref=db.backref('artists', lazy='dynamic'))
-    collections = db.relationship('Collection', secondary=artist_collections, backref=db.backref('artists', lazy='dynamic'))
+    collections = db.relationship('Collection', backref='artist', lazy='dynamic', order_by='Collection.name')
 
 class Collection(db.Model, AppModel):
     """Colection of tracks (eg. albumn, symphony)"""
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Unicode)
     tracks = db.relationship('Track', backref='collection', lazy='dynamic')
+    artist_id = db.Column(db.Integer, db.ForeignKey('artist.id'))
 
 class Track(db.Model, AppModel):
     id = db.Column(db.Integer, primary_key=True)
@@ -142,7 +134,7 @@ def status():
         track = Track.query.get(midi_details['id'])
         track_data = track.as_dict()
         track_data['collection'] = track.collection.as_dict()
-        track_data['artists'] = [a.as_dict() for a in track.artists]
+        track_data['collection']['artist'] = track.collection.artist.as_dict()
         track_data.update(midi_details)
         
     midi_playlist = midi.get_playlist()
