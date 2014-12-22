@@ -35,7 +35,7 @@ class MidiPlayThread(threading.Thread):
                 break
         log.debug("MidiPlayThread terminated")
 
-class MidiPlaylist(object):
+class MidiQueue(object):
     def __init__(self, name="untitled"):
         self.midi = Midi(self.next_track)
         self.clear()
@@ -46,54 +46,64 @@ class MidiPlaylist(object):
         self.name = "untitled"
         self.repeat = False
         self.current_track_num = -1
-        self.playlist = []
-        self.state = "stopped"
+        self.queue = []
+        self.state = "initialized"
 
     def add(self, track_id, position=None):
         if position is None:
-            self.playlist.append(track_id)
+            self.queue.append(track_id)
+            log.info("Added {} to end of playlist (index {})".format(track_id, len(self.queue)-1))
         else:
-            self.playlist.insert(position, track_id)
+            self.queue.insert(position, track_id)
+            log.info("Added {} as index {} of playlist".format(track_id, position))
 
     def remove(self, position):
         if self.current_track_num == position:
             self.next_track()
         elif self.current_track_num > position:
             self.current_track_num -= 1
-        self.playlist.pop(position)
+        self.queue.pop(position)
 
     def get_current_track(self):
         if self.current_track_num < 0:
             track_id = None
         else:
-            track_id = self.playlist[self.current_track_num] 
+            track_id = self.queue[self.current_track_num] 
         data = {"id": track_id,
                 "length": self.midi.track_length,
                 "current_pos": dict(self.midi.current_pos._asdict())}
         return data
 
-    def get_playlist(self):
+    def set_next_track(self, track_num):
+        # next_track() increments current_track_num, so set it one
+        # lower than what it will become:
+        self.current_track_num = track_num - 1
+        log.info("Set current track: {}".format(self.current_track_num))
+
+    def get_queue(self):
         return {'current_track_num': self.current_track_num,
-                'playlist': self.playlist}
+                'tracks': self.queue}
 
     def next_track(self, force_play=False, **kw):
         time.sleep(2)
-        if self.current_track_num >= len(self.playlist)-1:
+        if self.current_track_num >= len(self.queue)-1:
             if self.repeat:
-                log.info("Playlist finished, looping back to the beginning (repeat==True)")
+                log.info("Queue finished, looping back to the beginning (repeat==True)")
                 self.current_track_num = 0
             else:
-                log.info("Playlist finished")
+                log.info("Queue finished")
                 return
 
-        log.info("Loading next track...")
         self.current_track_num += 1
-        self.midi.load_track("{}.mid".format(self.playlist[self.current_track_num]))
+        log.info("Loading track index {} ...".format(self.current_track_num))
+        self.midi.load_track("{}.mid".format(self.queue[self.current_track_num]))
         if self.state in ("playing",) or force_play:
             self.midi.play()
         
     def play(self):
-        if self.state in ("paused", "stopped"):
+        if self.state in ('paused', 'stopped'):
+            self.midi.play()
+        elif self.state in ("finished", "initialized"):
             self.next_track(force_play=True)
         self.state = "playing"
 
@@ -171,10 +181,10 @@ class Midi(object):
             return
         self.midish.sendline("p")
         self.midish.expect("\+ready")
+        log.info("Playback started for {}".format(self.current_track))
         self.play_thread = MidiPlayThread(self)
         self.play_thread.start()
         self._playing_state = "playing"
-        log.info("Playback started for {}".format(self.current_track))
         
     def _update_position(self, catch_exception=True):
         pats = ['\+pos ([0-9]+) ([0-9]+) ([0-9]+)']
@@ -189,7 +199,7 @@ class Midi(object):
         return self.current_pos
 
 def server():
-    midi = MidiPlaylist()
+    midi = MidiQueue()
     daemon = Pyro4.Daemon()
     ns = Pyro4.locateNS()
     uri=daemon.register(midi)

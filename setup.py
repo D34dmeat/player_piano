@@ -9,7 +9,8 @@ requires = (
     'Flask-Restless',
     'nose',
     'pexpect',
-    'requests'
+    'requests',
+    'mido'
 )
 
 setup(

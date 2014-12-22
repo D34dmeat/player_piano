@@ -4,11 +4,12 @@ import flask.ext.restless
 from flask import ( Flask, render_template, request, redirect, abort, Response,
                     jsonify, make_response, session)
 import Pyro4
+import mido
 import base64
 import os
 import json
 
-app = flask.Flask(__name__)
+app = flask.Flask(__name__, static_folder="../static", static_url_path="/static")
 app.config['DEBUG'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///player_piano.db'
 app.config['MIDI_STORE_PATH'] = 'midi_store'
@@ -31,6 +32,15 @@ class AppModel():
     def as_dict(self):
        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
+folder_artists = db.Table('folder_artists',
+                          db.Column('folder_id', db.Integer, db.ForeignKey('folder.id')),
+                          db.Column('artist_id', db.Integer, db.ForeignKey('artist.id')))
+
+class Folder(db.Model, AppModel):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.Unicode)
+    artists = db.relationship('Artist', secondary=folder_artists, backref=db.backref('folders', lazy='dynamic'), order_by='Artist.name')
+
 class Artist(db.Model, AppModel):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Unicode)
@@ -40,13 +50,16 @@ class Collection(db.Model, AppModel):
     """Colection of tracks (eg. albumn, symphony)"""
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Unicode)
-    tracks = db.relationship('Track', backref='collection', lazy='dynamic')
+    tracks = db.relationship('Track', backref='collection', lazy='dynamic', order_by='Track.collection_order')
     artist_id = db.Column(db.Integer, db.ForeignKey('artist.id'))
 
 class Track(db.Model, AppModel):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.Unicode)
-    collection_id = db.Column(db.Integer, db.ForeignKey('collection.id'))
+    collection_id = db.Column(db.Integer, db.ForeignKey('collection.id'), nullable=False)
+    collection_order = db.Column(db.Integer, nullable=False)
+    length = db.Column(db.Integer)
+    human_tempo = db.Column(db.Unicode)
     midi = None
 
 class Playlist(db.Model, AppModel):
@@ -81,8 +94,12 @@ def pre_delete_track(instance_id, **kw):
 def save_track_midi_data(instance_id, data, **kw):
     midi = base64.b64decode(data.get('midi', None))
     if midi:
-        with open(os.path.join(app.config['MIDI_STORE_PATH'], '{}.mid'.format(instance_id)), "wb") as f:
+        midi_path = os.path.join(app.config['MIDI_STORE_PATH'], '{}.mid'.format(instance_id))
+        with open(midi_path, "wb") as f:
             f.write(midi)
+        if 'length' not in data.keys():
+            mido_midi = mido.MidiFile(midi_path)
+            data['length'] = round(mido_midi.length)
     del data['midi']
 
 # Create the database tables.
@@ -105,29 +122,139 @@ manager.create_api(Playlist, methods=['GET', 'POST', 'DELETE', 'PUT'],
                    })
 manager.create_api(Collection, methods=['GET', 'POST', 'DELETE', 'PUT'])
 manager.create_api(Artist, methods=['GET', 'POST', 'DELETE', 'PUT'])
+manager.create_api(Folder, methods=['GET', 'POST', 'DELETE', 'PUT'])
+
+
+################################################################################
+## Views
+################################################################################
+
+@app.route('/')
+def index():
+    return redirect("/queue", code=302)
+
+@app.route('/queue')
+def view_queue():
+    return render_template("queue.jinja2.html")
+
+@app.route('/library')
+@app.route('/library/folder/<int:folder_id>/<name>')
+@app.route('/library/folder/<int:folder_id>/artist/<int:artist_id>/<name>')
+@app.route('/library/folder/<int:folder_id>/collection/<int:collection_id>/<name>')
+def view_library_browse(play_type=None, folder_id=None, play_id=None, artist_id=None, collection_id=None, name=None):
+    links = []
+    title = ""
+    show_tracks = False
+    tracks_type = None
+
+    if collection_id is not None:
+        collection = Collection.query.get(collection_id)
+        artist = collection.artist
+        folder = Folder.query.get(folder_id)
+        for track in collection.tracks:
+            links.append({'type':'track', 
+                          'name':track.title, 
+                          'collection':collection.id, 
+                          'track_id': track.id, 
+                          'length':"%i:%02i" % (track.length/60, track.length%60), 
+                          'collection_order':track.collection_order
+                      })
+            title = '<a href="/library">Library</a> / <a href="/library/folder/{folder_id}/{folder_name}">{folder_name}</a> / <a href="/library/folder/{folder_id}/artist/{artist_id}/{artist_name}">{artist_name}</a> / {collection_name}'.format(
+                folder_id=folder.id, folder_name=folder.name, artist_id=artist.id, artist_name=artist.name, collection_name=collection.name)
+            tracks_type = 'collection'
+            show_tracks = True
+            
+    elif artist_id is not None:
+        artist = Artist.query.get(artist_id)
+        folder = Folder.query.get(folder_id)
+        for collection in artist.collections:
+            links.append({'type':'collection', 
+                          'name':collection.name, 
+                          'href': '/library/folder/{}/collection/{}/{}'.format(folder.id,collection.id,collection.name)
+                      })
+            title = '<a href="/library">Library</a> / <a href="/library/folder/{folder_id}/{folder_name}">{folder_name}</a> / {artist_name}'.format(
+                folder_id=folder.id, folder_name=folder.name, artist_name=artist.name)
+    elif folder_id is not None:
+        folder = Folder.query.get(folder_id)
+        for artist in folder.artists:
+            links.append({'type':'artist', 'name':artist.name, 'href': '/library/folder/{}/artist/{}/{}'.format(folder.id,artist.id,artist.name)})
+            title = '<a href="/library">Library</a> / {}'.format(folder.name)
+    else:
+        folders = Folder.query.all()
+        for folder in folders:
+            links.append({'type':'folder', 'name':folder.name, 'href': '/library/folder/{}/{}'.format(folder.id,folder.name)})
+            title = 'Library'
+            
+
+    return render_template("library.jinja2.html", title=title, links=links, show_tracks=show_tracks, tracks_type=tracks_type)
+
+
+@app.route('/library/<play_type>/<int:play_id>/<name>')
+def view_library_direct(play_type=None, folder_id=None, play_id=None, artist_id=None, collection_id=None, name=None):
+    links = []
+    title = ""
+    
+    if play_id is not None:
+        # Direct link to folder, artist, or collection without going
+        # through the library hierarchy
+        if play_type == 'folder':
+            folder = Folder.query.get(play_id)
+            for artist in folder.artists:
+                links.append({'type':'artist', 'name': artist.name, 'href': '/library/artist/{}/{}'.format(artist.id,artist.name)})
+        elif play_type == 'artist':
+            thing = Artist.query.get(play_id)
+        elif play_type == 'collection':
+            thing = Collection.query.get(play_id)
+            return render_template("library.jinja2.html", title=title, links=links)
 
 
 ################################################################################
 ## Action api
 ################################################################################
+@app.route('/api/player/play', methods=['POST'])
+def replace_queue():
+    """Play the current queue, or clear the queue and play a fresh playlist/collection/track."""
+    
+    data = request.get_json()
+    if data.get('id', None) is None:
+        # Don't queue anything, just play.
+        midi.play()
+        return jsonify({"status": "ok"})
 
-@app.route('/api/player/play/<play_type>/<play_id>')
-def play_track(play_type, play_id):
-    """Clear the current playlist and load a playlist/collection/track."""
-    if play_type not in ('collection', 'track', 'playlist'):
+    if data['type'] not in ('collection', 'track', 'playlist'):
         return make_response(jsonify({"message":"invalid type for playing"}), 400)
     midi.clear()
-    if play_type == 'track':
-        midi.add(play_id)
-    elif play_type == 'collection':
-        collection = Collection.query.get(play_id)
+    if data['type'] == 'track':
+        midi.add(data.get('id'))
+    elif data['type'] == 'collection':
+        collection = Collection.query.get(data.get('id'))
         for track in collection.tracks:
             midi.add(track.id)
+
+    track_num = data.get('track_num', 0)
+    if track_num > 0:
+        midi.set_next_track(track_num)
+
     midi.play()
     return jsonify({"status":"ok"})
 
-@app.route('/api/player/status')
-def status():
+@app.route('/api/player/enqueue', methods=['POST'])
+def enqueue():
+    """Add a playlist/collection/track onto the end of the queue."""
+
+    data = request.get_json()
+    if data.get('type', None) not in ('collection', 'track', 'playlist'):
+        return make_response(jsonify({"message":"invalid type for playing"}), 400)
+    if data.get('type') == 'track':
+        midi.add(data.get('id'))
+    elif data.get('type') == 'collection':
+        collection = Collection.query.get(data.get('id'))
+        for track in collection.tracks:
+            midi.add(track.id)
+    return jsonify({"status":"ok"})
+
+@app.route('/api/player/queue')
+def queue():
     midi_details = midi.get_current_track()
     track_data = None
     if midi_details['id'] is not None:
@@ -137,16 +264,16 @@ def status():
         track_data['collection']['artist'] = track.collection.artist.as_dict()
         track_data.update(midi_details)
         
-    midi_playlist = midi.get_playlist()
-    
+    midi_queue = midi.get_queue()
     return jsonify({"current_track": track_data,
-                    "playlist": midi_playlist})
+                    "queue": midi_queue})
 
-@app.route('/api/player/stop')
+@app.route('/api/player/stop', methods=['POST'])
 def stop():
     """Stop playback"""
     midi.stop()
     return jsonify({"status":"ok"})
 
 # start the flask loop
-app.run()
+if __name__ == "__main__":
+    app.run(host='0.0.0.0')

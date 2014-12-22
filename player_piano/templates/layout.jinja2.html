@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width,
+                                       initial-scale=1">
+        <title>Piano Player - {% block title %}{% endblock %}</title>
+         
+        <link rel="stylesheet" href="/static/lib/bootstrap-3.1.1-dist/css/bootstrap.css" />
+        <link rel="stylesheet" href="/static/css/app.css" />
+        <link href='http://fonts.googleapis.com/css?family=Philosopher'
+              rel='stylesheet' type='text/css'>
+        <script src="/static/lib/jquery-2.1.0.min.js"></script>
+        <script src="/static/js/search.js"></script>
+        <script src="/static/js/util.js"></script>
+        <script src="/static/lib/bootstrap-3.1.1-dist/js/bootstrap.js"></script>
+        <script src="/static/lib/jquery.dataTables.min.js"></script>
+        <script src="/static/lib/slip.min.js"></script>
+
+      {% block head %}
+      {% endblock %}
+
+
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+            <![endif]-->
+
+    <style type="text/css">
+      {% block style %}
+      {% endblock %}
+    </style>
+
+    </head>
+    <body>
+      <div id="container">
+      <nav class="navbar navbar-default" role="navigation">
+        <div class="container-fluid">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Piano Player</a>
+          </div>
+
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+              <li><a href="/queue">Queue</a></li>
+              <li><a href="/library">Library</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+            </ul>
+          </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+      </nav>
+
+      {% block body %}
+      {% endblock %}
+</div>
+
+<div class="site-footer">
+  
+  <hr/>
+  <ul class="site-footer-links right">
+    <li>© 2015 <a href="http://www.mcguirepiano.com">McGuire Piano</a></li>
+  </ul>
+
+  <ul class="site-footer-links">
+  </ul>
+</div>
+
+
+</body>
+</html>
