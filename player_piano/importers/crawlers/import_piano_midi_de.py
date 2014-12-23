@@ -16,7 +16,7 @@ def main():
         artist_name = re.sub('[ ]+', ' ', artist['name'])
         print(artist_name)
 
-        artist_obj = api.post('artist', {'name': artist_name, 'folders':[{'id':folder['id']}]})
+        artist_obj = api.post('artist', {'name': artist_name, 'folder':{'id':folder['id']}})
         
         for playlist in artist['playlists']:
             pl_title = playlist['title']

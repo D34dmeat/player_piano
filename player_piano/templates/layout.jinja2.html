@@ -12,11 +12,16 @@
         <link href='http://fonts.googleapis.com/css?family=Philosopher'
               rel='stylesheet' type='text/css'>
         <script src="/static/lib/jquery-2.1.0.min.js"></script>
+        <script src="/static/js/player.js"></script>
         <script src="/static/js/search.js"></script>
+        <script src="/static/js/library.js"></script>
+        <script src="/static/js/queue.js"></script>
         <script src="/static/js/util.js"></script>
+        <script src="/static/js/app.js"></script>
         <script src="/static/lib/bootstrap-3.1.1-dist/js/bootstrap.js"></script>
         <script src="/static/lib/jquery.dataTables.min.js"></script>
         <script src="/static/lib/slip.min.js"></script>
+        <script src="/static/lib/nunjucks.min.js"></script>
 
       {% block head %}
       {% endblock %}
@@ -47,14 +52,14 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="/">Piano Player</a>
+            <a class="async navbar-brand" href="/">Piano Player</a>
           </div>
 
           <!-- Collect the nav links, forms, and other content for toggling -->
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-              <li><a href="/queue">Queue</a></li>
-              <li><a href="/library">Library</a></li>
+              <li><a class="async" href="/queue">Queue</a></li>
+              <li><a class="async" href="/library">Library</a></li>
             </ul>
 
             <form class="navbar-form navbar-left disabled" role="search">
@@ -65,26 +70,23 @@
             </form>
             
             <ul class="nav navbar-nav navbar-right">
-              <li><a href="/upload">Upload Music</a></li>
-              <li><a href="/about">About</a></li>
+              <li><a class="async" href="/upload">Upload Music</a></li>
+              <li><a class="async" href="/about">About</a></li>
             </ul>
           </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
       </nav>
+
+      <div id="async_container">
+      </div>
 
       {% block body %}
       {% endblock %}
 </div>
 
 <div class="site-footer">
-  
-  <hr/>
-  <ul class="site-footer-links right">
-    <li>© 2015 <a href="http://www.mcguirepiano.com">McGuire Piano</a></li>
-  </ul>
-
-  <ul class="site-footer-links">
-  </ul>
+  <div id="player">
+  </div>  
 </div>
 
 

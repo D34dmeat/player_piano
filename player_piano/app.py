@@ -32,19 +32,16 @@ class AppModel():
     def as_dict(self):
        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
 
-folder_artists = db.Table('folder_artists',
-                          db.Column('folder_id', db.Integer, db.ForeignKey('folder.id')),
-                          db.Column('artist_id', db.Integer, db.ForeignKey('artist.id')))
-
 class Folder(db.Model, AppModel):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Unicode)
-    artists = db.relationship('Artist', secondary=folder_artists, backref=db.backref('folders', lazy='dynamic'), order_by='Artist.name')
+    artists = db.relationship('Artist', backref='folder', lazy='dynamic', order_by='Artist.name')
 
 class Artist(db.Model, AppModel):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Unicode)
     collections = db.relationship('Collection', backref='artist', lazy='dynamic', order_by='Collection.name')
+    folder_id = db.Column(db.Integer, db.ForeignKey('folder.id'), nullable=False)
 
 class Collection(db.Model, AppModel):
     """Colection of tracks (eg. albumn, symphony)"""
@@ -110,102 +107,117 @@ manager = flask.ext.restless.APIManager(app, flask_sqlalchemy_db=db)
 
 # Create API endpoints, which will be available at /api/<tablename> by
 # default. Allowed HTTP methods can be specified as well.
-manager.create_api(Track, methods=['GET', 'POST', 'DELETE', 'PUT'],
+manager.create_api(Track, methods=['GET', 'POST', 'DELETE', 'PUT'], 
+                   max_results_per_page=0,
+                   results_per_page=0,
                    preprocessors={
                        'DELETE': [pre_delete_track],
                        'PUT_SINGLE': [save_track_midi_data]
                    })
 manager.create_api(Playlist, methods=['GET', 'POST', 'DELETE', 'PUT'],
+                   max_results_per_page=0,
+                   results_per_page=0,
                    postprocessors={
                        'GET_SINGLE': [post_get_playlist],
                        'GET_MANY': [post_get_playlist]
                    })
-manager.create_api(Collection, methods=['GET', 'POST', 'DELETE', 'PUT'])
-manager.create_api(Artist, methods=['GET', 'POST', 'DELETE', 'PUT'])
-manager.create_api(Folder, methods=['GET', 'POST', 'DELETE', 'PUT'])
+manager.create_api(Collection, methods=['GET', 'POST', 'DELETE', 'PUT'],
+                   max_results_per_page=0,
+                   results_per_page=0,
+)
+manager.create_api(Artist, methods=['GET', 'POST', 'DELETE', 'PUT'],
+                   max_results_per_page=0,
+                   results_per_page=0,
+)
+manager.create_api(Folder, methods=['GET', 'POST', 'DELETE', 'PUT'],
+                   max_results_per_page=0,
+                   results_per_page=0,
+)
 
 
 ################################################################################
 ## Views
 ################################################################################
 
-@app.route('/')
-def index():
-    return redirect("/queue", code=302)
-
-@app.route('/queue')
-def view_queue():
-    return render_template("queue.jinja2.html")
-
-@app.route('/library')
-@app.route('/library/folder/<int:folder_id>/<name>')
-@app.route('/library/folder/<int:folder_id>/artist/<int:artist_id>/<name>')
-@app.route('/library/folder/<int:folder_id>/collection/<int:collection_id>/<name>')
-def view_library_browse(play_type=None, folder_id=None, play_id=None, artist_id=None, collection_id=None, name=None):
-    links = []
-    title = ""
-    show_tracks = False
-    tracks_type = None
-
-    if collection_id is not None:
-        collection = Collection.query.get(collection_id)
-        artist = collection.artist
-        folder = Folder.query.get(folder_id)
-        for track in collection.tracks:
-            links.append({'type':'track', 
-                          'name':track.title, 
-                          'collection':collection.id, 
-                          'track_id': track.id, 
-                          'length':"%i:%02i" % (track.length/60, track.length%60), 
-                          'collection_order':track.collection_order
-                      })
-            title = '<a href="/library">Library</a> / <a href="/library/folder/{folder_id}/{folder_name}">{folder_name}</a> / <a href="/library/folder/{folder_id}/artist/{artist_id}/{artist_name}">{artist_name}</a> / {collection_name}'.format(
-                folder_id=folder.id, folder_name=folder.name, artist_id=artist.id, artist_name=artist.name, collection_name=collection.name)
-            tracks_type = 'collection'
-            show_tracks = True
-            
-    elif artist_id is not None:
-        artist = Artist.query.get(artist_id)
-        folder = Folder.query.get(folder_id)
-        for collection in artist.collections:
-            links.append({'type':'collection', 
-                          'name':collection.name, 
-                          'href': '/library/folder/{}/collection/{}/{}'.format(folder.id,collection.id,collection.name)
-                      })
-            title = '<a href="/library">Library</a> / <a href="/library/folder/{folder_id}/{folder_name}">{folder_name}</a> / {artist_name}'.format(
-                folder_id=folder.id, folder_name=folder.name, artist_name=artist.name)
-    elif folder_id is not None:
-        folder = Folder.query.get(folder_id)
-        for artist in folder.artists:
-            links.append({'type':'artist', 'name':artist.name, 'href': '/library/folder/{}/artist/{}/{}'.format(folder.id,artist.id,artist.name)})
-            title = '<a href="/library">Library</a> / {}'.format(folder.name)
-    else:
-        folders = Folder.query.all()
-        for folder in folders:
-            links.append({'type':'folder', 'name':folder.name, 'href': '/library/folder/{}/{}'.format(folder.id,folder.name)})
-            title = 'Library'
-            
-
-    return render_template("library.jinja2.html", title=title, links=links, show_tracks=show_tracks, tracks_type=tracks_type)
-
-
-@app.route('/library/<play_type>/<int:play_id>/<name>')
-def view_library_direct(play_type=None, folder_id=None, play_id=None, artist_id=None, collection_id=None, name=None):
-    links = []
-    title = ""
+@app.route('/', defaults={'path':'/'})
+@app.route('/<path:path>')
+def index(path):    
+    """Most pages redirect to this controller and relies on asynchronous page generation on the client"""
+    return render_template("main.jinja2.html")
     
-    if play_id is not None:
-        # Direct link to folder, artist, or collection without going
-        # through the library hierarchy
-        if play_type == 'folder':
-            folder = Folder.query.get(play_id)
-            for artist in folder.artists:
-                links.append({'type':'artist', 'name': artist.name, 'href': '/library/artist/{}/{}'.format(artist.id,artist.name)})
-        elif play_type == 'artist':
-            thing = Artist.query.get(play_id)
-        elif play_type == 'collection':
-            thing = Collection.query.get(play_id)
-            return render_template("library.jinja2.html", title=title, links=links)
+# @app.route('/queue')
+# def view_queue():
+#     return render_template("queue.jinja2.html")
+
+# @app.route('/library')
+# @app.route('/library/folder/<int:folder_id>/<name>')
+# @app.route('/library/folder/<int:folder_id>/artist/<int:artist_id>/<name>')
+# @app.route('/library/folder/<int:folder_id>/collection/<int:collection_id>/<name>')
+# def view_library_browse(play_type=None, folder_id=None, play_id=None, artist_id=None, collection_id=None, name=None):
+#     links = []
+#     title = ""
+#     show_tracks = False
+#     tracks_type = None
+
+#     if collection_id is not None:
+#         collection = Collection.query.get(collection_id)
+#         artist = collection.artist
+#         folder = Folder.query.get(folder_id)
+#         for track in collection.tracks:
+#             links.append({'type':'track', 
+#                           'name':track.title, 
+#                           'collection':collection.id, 
+#                           'track_id': track.id, 
+#                           'length':"%i:%02i" % (track.length/60, track.length%60), 
+#                           'collection_order':track.collection_order
+#                       })
+#             title = '<a href="/library">Library</a> / <a href="/library/folder/{folder_id}/{folder_name}">{folder_name}</a> / <a href="/library/folder/{folder_id}/artist/{artist_id}/{artist_name}">{artist_name}</a> / {collection_name}'.format(
+#                 folder_id=folder.id, folder_name=folder.name, artist_id=artist.id, artist_name=artist.name, collection_name=collection.name)
+#             tracks_type = 'collection'
+#             show_tracks = True
+            
+#     elif artist_id is not None:
+#         artist = Artist.query.get(artist_id)
+#         folder = Folder.query.get(folder_id)
+#         for collection in artist.collections:
+#             links.append({'type':'collection', 
+#                           'name':collection.name, 
+#                           'href': '/library/folder/{}/collection/{}/{}'.format(folder.id,collection.id,collection.name)
+#                       })
+#             title = '<a href="/library">Library</a> / <a href="/library/folder/{folder_id}/{folder_name}">{folder_name}</a> / {artist_name}'.format(
+#                 folder_id=folder.id, folder_name=folder.name, artist_name=artist.name)
+#     elif folder_id is not None:
+#         folder = Folder.query.get(folder_id)
+#         for artist in folder.artists:
+#             links.append({'type':'artist', 'name':artist.name, 'href': '/library/folder/{}/artist/{}/{}'.format(folder.id,artist.id,artist.name)})
+#             title = '<a href="/library">Library</a> / {}'.format(folder.name)
+#     else:
+#         folders = Folder.query.all()
+#         for folder in folders:
+#             links.append({'type':'folder', 'name':folder.name, 'href': '/library/folder/{}/{}'.format(folder.id,folder.name)})
+#             title = 'Library'
+            
+
+#     return render_template("library.jinja2.html", title=title, links=links, show_tracks=show_tracks, tracks_type=tracks_type)
+
+
+# @app.route('/library/<play_type>/<int:play_id>/<name>')
+# def view_library_direct(play_type=None, folder_id=None, play_id=None, artist_id=None, collection_id=None, name=None):
+#     links = []
+#     title = ""
+    
+#     if play_id is not None:
+#         # Direct link to folder, artist, or collection without going
+#         # through the library hierarchy
+#         if play_type == 'folder':
+#             folder = Folder.query.get(play_id)
+#             for artist in folder.artists:
+#                 links.append({'type':'artist', 'name': artist.name, 'href': '/library/artist/{}/{}'.format(artist.id,artist.name)})
+#         elif play_type == 'artist':
+#             thing = Artist.query.get(play_id)
+#         elif play_type == 'collection':
+#             thing = Collection.query.get(play_id)
+#             return render_template("library.jinja2.html", title=title, links=links)
 
 
 ################################################################################
@@ -273,6 +285,7 @@ def stop():
     """Stop playback"""
     midi.stop()
     return jsonify({"status":"ok"})
+
 
 # start the flask loop
 if __name__ == "__main__":

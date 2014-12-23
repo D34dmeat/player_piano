@@ -1,3 +1,8 @@
+var renderQueuePage = function() {
+    $("#async_container").append("queue");
+};
+
+
 var setupList = function() {
     var list = $("#slippylist")[0];
     list.addEventListener('slip:beforereorder', function(e){
@@ -36,7 +41,7 @@ var updatePlaylist = function() {
     });
 };
 
-$(document).ready(function(){
-    setupList();
-    updatePlaylist();
-});
+// $(document).ready(function(){
+//     setupList();
+//     updatePlaylist();
+// });
