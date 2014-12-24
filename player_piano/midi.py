@@ -40,7 +40,8 @@ class MidiQueue(object):
     def __init__(self, name="untitled"):
         self.name = name
         self.subscriptions = {} # client_id -> pyro4 callback
-        self.midi = Midi(track_end_callback=self.next_track, position_update_callback=self.position_update_callback)
+        self.midi = Midi(track_end_callback=self.next_track, position_update_callback=self.position_update_callback,
+                         player_state_callback=self.player_state_callback)
         self.clear()
 
     def subscribe(self, client_id, callback):
@@ -65,6 +66,11 @@ class MidiQueue(object):
                       'pos': {'measure': pos.measure,
                               'beat': pos.beat,
                               'tick': pos.tick}})
+
+    def player_state_callback(self, state):
+        """Notify player state change: playing, paused, stopped"""
+        self.publish({'type':'player_state',
+                      'state': state})
 
     def clear(self):
         self.midi.stop()
@@ -121,7 +127,11 @@ class MidiQueue(object):
 
         self.current_track_num += 1
         log.info("Loading track index {} ...".format(self.current_track_num))
-        self.midi.load_track("{}.mid".format(self.queue[self.current_track_num]))
+        track_length = self.midi.load_track(self.queue[self.current_track_num])
+        self.publish({"type":"load_track",
+                      "track_id": self.queue[self.current_track_num],
+                      "current_track_num": self.current_track_num,
+                      "track_length": track_length})
         if self.state in ("playing",) or force_play:
             self.midi.play()
         
@@ -142,15 +152,17 @@ class MidiQueue(object):
 
 class Midi(object):
     """Low level midi interface via midish"""
-    def __init__(self, track_end_callback=None, position_update_callback=None, library_path="midi_store"):
+    def __init__(self, track_end_callback=None, position_update_callback=None, 
+                 player_state_callback=None, library_path="midi_store"):
         self.library_path = library_path
         self.current_track = None
         self.current_pos = TrackPosition(0,0,0)
         self.track_length = 0
         self.play_thread = None
-        self._playing_state = "stopped"
         self.track_end_callback = track_end_callback
         self.position_update_callback = position_update_callback
+        self.player_state_callback = player_state_callback
+        self.player_state("stopped")
         self._startup()
 
     def _startup(self):
@@ -162,8 +174,9 @@ class Midi(object):
         self.midish.expect("\+ready")
         log.info("midish initialized")
 
-    def load_track(self, name):
+    def load_track(self, track_id):
         self.stop()
+        name = "{}.mid".format(track_id)
         self.midish.sendline('import "{}"'.format(name))
         # Tracks that load properly show the initialized position:
         try:
@@ -178,13 +191,19 @@ class Midi(object):
         self.midish.expect("\+ready")
         self.current_track = name
         log.info("Track loaded: {} - {} measures".format(name, self.track_length))
+        return self.track_length
+
+    def player_state(self, state):
+        self._playing_state = state
+        if self.player_state_callback:
+            self.player_state_callback(state)
 
     def stop(self):
         if self.play_thread:
             self.play_thread.stop()
         self.midish.sendline("s")
         self.midish.expect("\+ready")
-        self._playing_state = "stopped"
+        self.player_state("stopped")
         log.info("Playback stopped")
 
     def pause(self):
@@ -192,7 +211,7 @@ class Midi(object):
             self.play_thread.stop()
         self.midish.sendline("i")
         self.midish.expect("\+ready")
-        self._playing_state = "paused"
+        self.player_state("paused")
         log.info("Playback Paused")
 
     def _track_end(self):
@@ -210,7 +229,7 @@ class Midi(object):
         log.info("Playback started for {}".format(self.current_track))
         self.play_thread = MidiPlayThread(self)
         self.play_thread.start()
-        self._playing_state = "playing"
+        self.player_state("playing")
         
     def _update_position(self, catch_exception=True):
         pats = ['\+pos ([0-9]+) ([0-9]+) ([0-9]+)']

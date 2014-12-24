@@ -10,6 +10,8 @@ import os
 import time
 import json
 
+from midi_event_client import MidiEventQueue
+
 app = flask.Flask(__name__, static_folder="../static", static_url_path="/static")
 app.config['DEBUG'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///player_piano.db'
@@ -296,15 +298,16 @@ def stop():
     return jsonify({"status":"ok"})
 
 
-@app.route('/api/testlong')
-def testlong():
-    def generate():
-        x = 0
+@app.route('/api/player/events')
+def events():
+    midi_event_queue = MidiEventQueue()
+    midi_event_queue.start()
+
+    def stream_events():
         while True:
-            x+=1
-            time.sleep(1)
-            yield 'still here... {}\n'.format(x)
-    return Response(generate(), mimetype='text/plain')
+            yield json.dumps(midi_event_queue.get_event()) + "\n"
+
+    return Response(stream_events(), mimetype='text/plain')
 
 # start the flask loop
 if __name__ == "__main__":
