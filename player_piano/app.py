@@ -229,7 +229,7 @@ def index(path):
 ## Action api
 ################################################################################
 @app.route('/api/player/play', methods=['POST'])
-def replace_queue():
+def play():
     """Play the current queue, or clear the queue and play a fresh playlist/collection/track."""
     
     data = request.get_json()
@@ -293,6 +293,12 @@ def queue():
     return jsonify({"current_track": track_data,
                     "queue": queue})
 
+@app.route('/api/player/clear_queue', methods=['POST'])
+def clear_queue():
+    midi.clear()
+    return jsonify({"status":"ok"})
+
+
 @app.route('/api/player/stop', methods=['POST'])
 def stop():
     """Stop playback"""
@@ -317,12 +323,32 @@ def prev_track():
     midi.prev_track(force_play=True)
     return jsonify({"status":"ok"})
 
+@app.route('/api/player/play_queue_track', methods=['POST'])
+def queue_play_track():
+    """Play a track already in the queue"""
+    data = request.get_json()
+    if data.get('track_num', None) is None:
+        return make_response(jsonify({"message":"need to specify track_num"}), 400)
+    
+    midi.stop()
+    midi.set_next_track(data['track_num'])
+    midi.next_track(force_play=True)
+    return jsonify({"status":"ok"})
+
+
+@app.route('/api/player/restart_track', methods=['POST'])
+def restart_track():
+    """Restart the current track in the queue from the beginning"""
+    midi.stop()
+    time.sleep(1)
+    midi.play()
+    return jsonify({"status":"ok"})
+
 @ws.route('/api/player/events')
 def events(ws):
     player_state = midi.get_player_state()
-    if player_state['track_id'] != None:
-        ws.send(json.dumps(player_state))
-        ws.send(json.dumps({'type':'player_state', 'state':player_state['play_state']}))
+    ws.send(json.dumps(player_state))
+    ws.send(json.dumps({'type':'player_state', 'state':player_state['play_state']}))
         
     midi_event_queue = MidiEventQueue()
     midi_event_queue.start()

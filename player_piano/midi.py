@@ -79,6 +79,7 @@ class MidiQueue(object):
         self.current_track_num = -1
         self.queue = []
         self.state = "initialized"
+        self.publish(self.get_player_state())
 
     def add(self, track_id, position=None):
         if position is None:
@@ -159,7 +160,10 @@ class MidiQueue(object):
         
     def play(self):
         if self.state in ('paused', 'stopped'):
-            self.midi.play()
+            if self.current_track_num >= 0:
+                self.midi.play()
+            else:
+                self.next_track(force_play=True)
         elif self.state in ("finished", "initialized"):
             self.next_track(force_play=True)
         self.state = "playing"

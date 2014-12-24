@@ -67,6 +67,17 @@ body {
     font-size: 1.1em;    
 }
 
+#loading_indicator {
+    top:52px;
+    bottom:56px;
+    right:0;
+    left:0;
+    position: fixed;
+    z-index:500;
+    pointer-events: none;
+}
+
+
 /* Player */
 
 #tracklist_title, .tracklist {
@@ -100,7 +111,6 @@ body {
     cursor: default;
     
     display:block;
-    border-bottom: 1px solid #ccc;
     background: white;
     margin: 0; padding: 0;
     margin-bottom: 0px;
@@ -151,6 +161,10 @@ body {
     cursor: default;
 }
 
+#player .player-button.player-disabled {
+    color: #aaa;
+}
+
 #player-progress {
     height: 5px;
     margin-bottom: 0px;
@@ -161,8 +175,19 @@ body {
     float: left;
     margin-right: -159px;
     height: 56px;
+    white-space: nowrap;
+    overflow: hidden;
+    visibility: hidden;
 }
 
+#player-track-title {
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+#player-left.playing {
+    visibility: visible;
+}
 
 #player-middle {
     height: 100%;

@@ -43,6 +43,10 @@ from scratch
 
  * Boot pi, and follow config to set hostname and resize image
 
+ * Edit /etc/apt/sources.list and change 'wheezy' to 'jessie'
+
+ * Upgrade to jessie: `apt-get update && apt-get dist-upgrade`
+
  * `apt-get update && apt-get install wpa_supplicant isc-dhcp-server`
 
  * Configure dhcp server, edit /etc/dhcp/dhcpd.conf, put this at the bottom:
@@ -82,3 +86,8 @@ from scratch
 
   
 
+Setup app on raspberry pi
+-------------------------
+
+cd ~
+git clone git@bitbucket.org:enigmacurry/player_piano.git

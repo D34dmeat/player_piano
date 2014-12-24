@@ -111,10 +111,11 @@ var setupPlayLinks = function() {
                     data: JSON.stringify(request),
                     contentType: 'application/json'
                 }).success(function(data) {
+                    renderPage('/queue');
                 }).error(function(data) {
                     console.log(data);
                     alert("error: "+data.status+" "+data.statusText+" "+data.responseText);
-                });                
+                });
                 e.preventDefault();
             });
         });

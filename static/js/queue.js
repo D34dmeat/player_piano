@@ -1,3 +1,5 @@
+var queueTracks = {}; // track_id -> track details
+
 var renderQueuePage = function() {
     $("#async_container").html("");
     updateQueuelist(function() {
@@ -42,26 +44,52 @@ var updateQueuelist = function(callback) {
     $.getJSON('/api/player/queue', function(data) {
         var list = $("#queuelist");
         $("#queuelist li").remove();
+        queueTracks = {};
         $.each(data['queue'], function(i, track) {
-            list.append(nunjucks.renderString("<li data-track-id='{{track_id}}'><table class='table'><tr><td class='track-icon'><img src='/static/img/equalizer.gif'/></td><td class='col-md-6'>{{title}}</td><td class='col-md-1'>{{length}}</td><td>{{artist}}</td><td>{{collection}}</td></tr></table></li>", {
+            list.append(nunjucks.renderString("<li data-track-id='{{track_id}}'><table class='table'><tr><td class='track-icon'><img src='/static/img/equalizer.gif'/></td><td class='col-md-6'><a class='track asnyc'>{{title}}</a></td><td class='col-md-1'>{{length}}</td><td class='col-md-2'>{{artist}}</td><td class='col-md-4'>{{collection}}</td></tr></table></li>", {
                 title: track.title,
                 track_id: track.id,
-                length: track.length,
+                length: parseInt(track.length / 60) + ":" + ("00"+track.length % 60).slice(-"00".length),
                 artist: track.collection.artist.name,
                 collection: track.collection.name
             }));
+            queueTracks[track.id] = track;
+            $("#queuelist li[data-track-id="+track.id+"] a.track").click(function() {
+                playQueueTrack(i);
+            });
         });
         player_state_callback();
         if (callback) {
             callback();
         }
+        $("#queue-clear").unbind("click").click(function() {
+            requestPlayerState("clear_queue", updateQueuelist);
+        });
     });
 };
+
+var playQueueTrack = function(track_num, callback) {
+    $.ajax({
+        type: "POST",
+        url: '/api/player/play_queue_track',
+        data: JSON.stringify({track_num:track_num}),
+        contentType: 'application/json'
+    }).success(function(data) {
+        if (callback)
+            callback();
+    }).error(function(data) {
+        console.log(data);
+        alert("error: "+data.status+" "+data.statusText+" "+data.responseText);
+    });
+}
 
 var player_state_callback = function() {
     $("#queuelist li").removeClass("current_track");
     if(playerState.queue) {
         $($("#queuelist li")[playerState.queue.current_track_num]).addClass("current_track");
+        if(playerState.state == "playing" || playerState.state == "paused") {
+            showPlayerTrackDetails();
+        }
         if(playerState.state == "playing") {
             $("#player-play-button").removeClass("glyphicon-play").addClass("glyphicon-pause");
             $("#queuelist .track-icon").removeClass("playing");
@@ -69,6 +97,7 @@ var player_state_callback = function() {
         } else {
             $("#queuelist .track-icon").removeClass("playing");
             $("#player-play-button").removeClass("glyphicon-pause").addClass("glyphicon-play");
+            showPlayerTrackDetails(false);
         }
     }
 }

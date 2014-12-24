@@ -9,6 +9,7 @@
          
         <link rel="stylesheet" href="/static/lib/bootstrap-3.1.1-dist/css/bootstrap.css" />
         <link rel="stylesheet" href="/static/css/app.css" />
+        <link rel="stylesheet" href="/static/css/loadingoverlay.css" />
         <link href='http://fonts.googleapis.com/css?family=Philosopher'
               rel='stylesheet' type='text/css'>
         <script src="/static/lib/jquery-2.1.0.min.js"></script>
@@ -21,6 +22,7 @@
         <script src="/static/js/app.js"></script>
         <script src="/static/lib/bootstrap-3.1.1-dist/js/bootstrap.js"></script>
         <script src="/static/lib/jquery.dataTables.min.js"></script>
+        <script src="/static/lib/loadingoverlay.js"></script>
         <script src="/static/lib/slip.min.js"></script>
         <script src="/static/lib/nunjucks.min.js"></script>
 
@@ -69,7 +71,6 @@
               <div class="form-group">
                 <input type="text" class="form-control" placeholder="Search">
               </div>
-              <button type="submit" class="btn btn-default">Submit</button>
             </form>
             
             <ul class="nav navbar-nav navbar-right">
@@ -80,10 +81,17 @@
         </div><!-- /.container-fluid -->
       </nav>
 
-      <div id="queue_container">
-      </div>
-      
-      <div id="async_container">
+      <div id="content_container">
+        
+        <div id="loading_indicator">
+        </div>
+
+        <div id="queue_container">
+        </div>
+        
+        <div id="async_container">
+        </div>
+        
       </div>
       {% block body %}
       {% endblock %}
@@ -136,6 +144,8 @@
           </div>
         </div>
         <div id="player-left">
+          <span id="player-track-title">Track</span><br/>
+          <span id="player-artist-title">Artist</span> - <span id="player-collection-title">Collection</span>
         </div>
         <div id="player-middle">
           <center>

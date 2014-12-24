@@ -103,20 +103,38 @@ var setupAsyncPageNavigation = function() {
     });
 };
 
+var loadingIndicator = function(on_off) {
+    if (on_off == false) {
+        $("#loading_indicator").loadingOverlay("remove");
+        $("#content_container").css("pointer-events", "auto");
+    } else {
+        $("#loading_indicator").loadingOverlay();
+        $("#content_container").css("pointer-events", "none");
+    }
+}
+
+$(document).ajaxStart(function(){ 
+    loadingIndicator();
+}).ajaxStop(function(){
+    loadingIndicator(false);
+});
+
 $(document).ready(function() {
 
-    midiEventSocket = midiEventListener();
+    updateQueuelist(function(){ 
+        midiEventSocket = midiEventListener();
 
-    nunjucks.configure("/static/client_templates", {
-        autoescape: true
+        nunjucks.configure("/static/client_templates", {
+            autoescape: true
+        });
+
+        //Render the queue once, but make it invisible when we're not on
+        //the queue page.
+        var queue_html = nunjucks.render('queue.html');
+        $("#queue_container").append(queue_html).hide();
+        setupQueueList();
+
+        setupAsyncPageNavigation();
+        setupPlayerButtons();
     });
-
-    //Render the queue once, but make it invisible when we're not on
-    //the queue page.
-    var queue_html = nunjucks.render('queue.html');
-    $("#queue_container").append(queue_html).hide();
-    setupQueueList();
-
-    setupAsyncPageNavigation();
-    setupPlayerButtons();
 });
