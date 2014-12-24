@@ -5,11 +5,22 @@ var page_handlers = {
     "/about"  : renderAboutPage
 };
 
+var cleanup_handlers = {
+    "/queue"  : cleanupQueuePage
+};
+
+
+
 var renderPage = function(path) {
     var page_handler = page_handlers['/'+path.split('/')[1]];
     if (page_handler == undefined || path[0] != '/') {
-        console.log("No page handler for '"+path);
+        console.log("No page handler for '"+path+"'");
     } else {
+        //Cleanup the current page
+        var cleanup_handler = cleanup_handlers['/'+location.pathname.split('/')[1]];
+        if (cleanup_handler) {
+            cleanup_handler();
+        }
         //Render the page. Page handler returns the state to return to
         //if we come back to the current page.
         var state = page_handler(path);
@@ -57,6 +68,7 @@ var renderTemplate = function(template, data, clear) {
     $('#async_container a.async').unbind("click").click(function(e) {
         //Disable regular link behaviour:
         e.preventDefault();
+        
         renderPage($(e.target).attr('href'));
     });
 };
@@ -83,6 +95,14 @@ $(document).ready(function() {
     nunjucks.configure("/static/client_templates", {
         autoescape: true
     });
-    
+
+    //Render the queue once, but make it invisible when we're not on
+    //the queue page.
+    var queue_html = nunjucks.render('queue.html');
+    $("#queue_container").append(queue_html).hide();
+    setupQueueList();
+
     setupAsyncPageNavigation();
+
+    midiEventListener();
 });

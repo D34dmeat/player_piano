@@ -51,7 +51,7 @@ class MidiQueue(object):
     def publish(self, message):
         to_unsubscribe = []
 
-        for client_id, subscriber in self.subscriptions.items():
+        for client_id, subscriber in self.subscriptions.copy().items():
             try:
                 subscriber.event(message)
             except Pyro4.errors.ConnectionClosedError:
@@ -100,8 +100,9 @@ class MidiQueue(object):
             track_id = None
         else:
             track_id = self.queue[self.current_track_num] 
-        data = {"id": track_id,
-                "length": self.midi.track_length,
+        data = {"track_id": track_id,
+                "track_length": self.midi.track_length,
+                "current_track_num": self.current_track_num,
                 "current_pos": dict(self.midi.current_pos._asdict())}
         return data
 

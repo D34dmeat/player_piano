@@ -7,6 +7,7 @@ requires = (
     'daemonize',
     'Flask-SQLAlchemy',
     'Flask-Restless',
+    'Flask-uWSGI-WebSocket',
     'nose',
     'pexpect',
     'requests',

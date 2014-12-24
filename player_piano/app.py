@@ -3,6 +3,7 @@ import flask.ext.sqlalchemy
 import flask.ext.restless
 from flask import ( Flask, render_template, request, redirect, abort, Response,
                     jsonify, make_response, session)
+from flask.ext.uwsgi_websocket import WebSocket
 import Pyro4
 import mido
 import base64
@@ -16,6 +17,7 @@ app = flask.Flask(__name__, static_folder="../static", static_url_path="/static"
 app.config['DEBUG'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///player_piano.db'
 app.config['MIDI_STORE_PATH'] = 'midi_store'
+ws = WebSocket(app)
 
 try:
     os.makedirs(app.config['MIDI_STORE_PATH'])
@@ -272,8 +274,8 @@ def enqueue():
 def queue():
     midi_details = midi.get_current_track()
     track_data = None
-    if midi_details['id'] is not None:
-        track = Track.query.get(midi_details['id'])
+    if midi_details['track_id'] is not None:
+        track = Track.query.get(midi_details['track_id'])
         track_data = track.as_dict()
         track_data['collection'] = track.collection.as_dict()
         track_data['collection']['artist'] = track.collection.artist.as_dict()
@@ -298,17 +300,19 @@ def stop():
     return jsonify({"status":"ok"})
 
 
-@app.route('/api/player/events')
-def events():
+@ws.route('/api/player/events')
+def events(ws):
+    current_track = midi.get_current_track()
+    current_track['type'] = 'load_track'
+    current_track.pop('current_pos', None)
+    if current_track['track_id'] != None:
+        ws.send(json.dumps(current_track))
+        
     midi_event_queue = MidiEventQueue()
     midi_event_queue.start()
-
-    def stream_events():
-        while True:
-            yield json.dumps(midi_event_queue.get_event()) + "\n"
-
-    return Response(stream_events(), mimetype='text/plain')
+    while True:
+        ws.send(json.dumps(midi_event_queue.get_event()))
 
 # start the flask loop
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', threaded=True)
+    app.run(host='0.0.0.0', threads=16)
