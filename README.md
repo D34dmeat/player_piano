@@ -1,6 +1,18 @@
 McGuire Piano Player
 ====================
 
+Midi links
+------------------
+
+Creative Commons:
+ * http://www.piano-midi.de/
+
+Unknown license:
+ * http://www.pianola.co.nz/rollscans/zip_download.html
+ * http://www.trachtman.org/ragtime/ - needs commercial license.
+ * http://bushgrafts.com/jazz/midi.htm - these are real nice.
+
+
 Debugging midi output
 ---------------------
 
