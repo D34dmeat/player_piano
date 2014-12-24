@@ -299,14 +299,30 @@ def stop():
     midi.stop()
     return jsonify({"status":"ok"})
 
+@app.route('/api/player/pause', methods=['POST'])
+def pause():
+    """Pause playback"""
+    midi.pause()
+    return jsonify({"status":"ok"})
+
+@app.route('/api/player/next_track', methods=['POST'])
+def next_track():
+    """Play next track in queue"""
+    midi.next_track(force_play=True)
+    return jsonify({"status":"ok"})
+
+@app.route('/api/player/prev_track', methods=['POST'])
+def prev_track():
+    """Play previous track in queue"""
+    midi.prev_track(force_play=True)
+    return jsonify({"status":"ok"})
 
 @ws.route('/api/player/events')
 def events(ws):
-    current_track = midi.get_current_track()
-    current_track['type'] = 'load_track'
-    current_track.pop('current_pos', None)
-    if current_track['track_id'] != None:
-        ws.send(json.dumps(current_track))
+    player_state = midi.get_player_state()
+    if player_state['track_id'] != None:
+        ws.send(json.dumps(player_state))
+        ws.send(json.dumps({'type':'player_state', 'state':player_state['play_state']}))
         
     midi_event_queue = MidiEventQueue()
     midi_event_queue.start()

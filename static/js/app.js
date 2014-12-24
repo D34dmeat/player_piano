@@ -1,5 +1,20 @@
+var midiEventSocket;
+
+var renderRootPage = function(path) {
+    //If there's something in the queue, go to the queue page.
+    //If not, go to the library page.
+    $.getJSON('/api/player/queue', function(data) {
+        if(data['queue'].length == 0) {
+            renderPage('/library');
+        } else {
+            renderPage('/queue');
+        }
+    });
+    
+}
+
 var page_handlers = {
-    "/"       : renderQueuePage,
+    "/"       : renderRootPage,
     "/library": renderLibraryPage,
     "/queue"  : renderQueuePage,
     "/about"  : renderAboutPage
@@ -8,8 +23,6 @@ var page_handlers = {
 var cleanup_handlers = {
     "/queue"  : cleanupQueuePage
 };
-
-
 
 var renderPage = function(path) {
     var page_handler = page_handlers['/'+path.split('/')[1]];
@@ -92,6 +105,8 @@ var setupAsyncPageNavigation = function() {
 
 $(document).ready(function() {
 
+    midiEventSocket = midiEventListener();
+
     nunjucks.configure("/static/client_templates", {
         autoescape: true
     });
@@ -103,6 +118,5 @@ $(document).ready(function() {
     setupQueueList();
 
     setupAsyncPageNavigation();
-
-    midiEventListener();
+    setupPlayerButtons();
 });

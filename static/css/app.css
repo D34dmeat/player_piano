@@ -127,3 +127,71 @@ body {
 #queuelist .track-icon.playing {
     visibility: visible;    
 }
+
+#queuelist .track-icon.playing {
+    visibility: visible;    
+}
+
+#queuelist li.current_track {
+    background-color: #eee;
+}
+
+
+/* /////////////////// player /////////////// */
+#player {
+    position: fixed;
+    height: 56px;
+    width: 100%;
+    bottom: 0;
+    background-color: #fafafa;
+    color: black;
+    z-index: 600;
+    box-shadow: 0 0 8px #888888;
+    box-shadow: 0 0 8px rgba(0,0,0,.4);
+    cursor: default;
+}
+
+#player-progress {
+    height: 5px;
+    margin-bottom: 0px;
+}
+
+#player-left {
+    width: 50%;
+    float: left;
+    margin-right: -159px;
+    height: 56px;
+}
+
+
+#player-middle {
+    height: 100%;
+    overflow: hidden;
+    width: 318px;
+    height: 53px;
+    margin: 3px 0 0 0;
+    float: left;
+    position: relative;
+    font-size: 35px;
+    margin-top: 5px;
+    background-color: #fafafa;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+#player .player-button {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+#player-right {
+    width: 50%;
+    float: right;
+    margin-left: -160px;
+    text-align: right;
+    margin-top: 3px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}

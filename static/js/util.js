@@ -23,3 +23,17 @@ if (!String.prototype.format) {
         }.bind(this));
     };
 }
+
+
+function exponentialBackoff (k, limit) {
+    var maxInterval = (Math.pow(2, k) - 1) * 1000;
+    
+    if (limit === undefined) {
+        limit = 30;
+    }
+    if (maxInterval > limit*1000) {
+        maxInterval = limit*1000; // If the generated interval is more than [limit] seconds, truncate it down to [limit] seconds.
+    }
+    
+    return maxInterval; 
+}

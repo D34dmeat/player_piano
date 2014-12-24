@@ -116,24 +116,45 @@ class MidiQueue(object):
         return {'current_track_num': self.current_track_num,
                 'tracks': self.queue}
 
+    def get_player_state(self):
+        if self.current_track_num >= 0:
+            track_id = self.queue[self.current_track_num]
+        else:
+            track_id = None
+        return {"play_state": self.state,
+                "type":"load_track",
+                "track_id": track_id,
+                "queue": self.get_queue(),
+                "track_length": self.midi.track_length}
+
     def next_track(self, force_play=False, **kw):
+        self.midi.stop()
         time.sleep(2)
         if self.current_track_num >= len(self.queue)-1:
-            if self.repeat:
-                log.info("Queue finished, looping back to the beginning (repeat==True)")
-                self.current_track_num = 0
+            if self.repeat or force_play:
+                log.info("Queue finished, looping back to the beginning")
+                self.current_track_num = -1
             else:
                 log.info("Queue finished")
+                self.state = "stopped"
+                self.current_track_num = -1
                 return
 
         self.current_track_num += 1
         log.info("Loading track index {} ...".format(self.current_track_num))
-        track_length = self.midi.load_track(self.queue[self.current_track_num])
-        self.publish({"type":"load_track",
-                      "track_id": self.queue[self.current_track_num],
-                      "current_track_num": self.current_track_num,
-                      "track_length": track_length})
+        self.midi.load_track(self.queue[self.current_track_num])
+        self.publish(self.get_player_state())
         if self.state in ("playing",) or force_play:
+            self.midi.play()
+
+    def prev_track(self, force_play=False, **kw):
+        # re-use next_track() by setting the current_track_num back two
+        if self.current_track_num > 0:
+            self.current_track_num -= 2
+            self.next_track()
+        else:
+            # If this is the first track of the queue, just restart:
+            self.midi.stop()
             self.midi.play()
         
     def play(self):
