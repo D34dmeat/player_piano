@@ -16,12 +16,15 @@
         <script src="/static/js/search.js"></script>
         <script src="/static/js/library.js"></script>
         <script src="/static/js/queue.js"></script>
+        <script src="/static/js/about.js"></script>
         <script src="/static/js/util.js"></script>
         <script src="/static/js/app.js"></script>
         <script src="/static/lib/bootstrap-3.1.1-dist/js/bootstrap.js"></script>
         <script src="/static/lib/jquery.dataTables.min.js"></script>
         <script src="/static/lib/slip.min.js"></script>
         <script src="/static/lib/nunjucks.min.js"></script>
+
+        <link href="data:image/x-icon;base64,AAABAAEAEBAQAAAAAAAoAQAAFgAAACgAAAAQAAAAIAAAAAEABAAAAAAAgAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAenp6AL29vQD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACIiAiIgIiIAAAAAAAAAAAAzMwMzMDMzADMzAzMwMzMAMzMDMzAzMwAzMwMzMDMzADMxETMREzMAMzAAMwADMwAzMAAzAAMzADMwADMAAzMAMzAAMwADMwAzMAAzAAMzADMwADMAAzMAMzAAMwADMwAAAAAAAAAACEIQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA" rel="icon" type="image/x-icon" />
 
       {% block head %}
       {% endblock %}
@@ -82,6 +85,44 @@
 
       {% block body %}
       {% endblock %}
+</div>
+
+
+<!-- About dialog -->
+<div class="modal fade" id="aboutModal" tabindex="-1" role="dialog" aria-labelledby="aboutModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close dismiss" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="aboutModalLabel">Piano Player</h4>
+      </div>
+      <div class="modal-body">
+        <div>
+          Copyright 2015 <a target="_new" href="http://www.mcguirepiano.com">McGuire
+          Piano</a>. All rights reserved.
+        </div>
+        <hr/>
+        <div>
+          <table>
+            <tr><td class='col-md-2'>
+                <img style="float:left"
+                     src="http://i.creativecommons.org/l/by-sa/3.0/de/88x31.png">
+              </td>
+              <td>
+                Classical midi files provided by Bernd Kruger from
+                  the <a target="_new" href='http://www.piano-midi.de/'>Classical Piano midi
+                  page</a>. Used <a target="_new" href='http://www.piano-midi.de/copy.htm'>by permission</a> under Creative Commons
+                license.
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default dismiss" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="site-footer">

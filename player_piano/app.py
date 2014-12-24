@@ -7,6 +7,7 @@ import Pyro4
 import mido
 import base64
 import os
+import time
 import json
 
 app = flask.Flask(__name__, static_folder="../static", static_url_path="/static")
@@ -277,8 +278,16 @@ def queue():
         track_data.update(midi_details)
         
     midi_queue = midi.get_queue()
+    queue = []
+    for t in midi_queue['tracks']:
+        track = Track.query.get(t)
+        q_track = track.as_dict()
+        q_track['collection'] = track.collection.as_dict()
+        q_track['collection']['artist'] = track.collection.artist.as_dict()
+        queue.append(q_track)
+
     return jsonify({"current_track": track_data,
-                    "queue": midi_queue})
+                    "queue": queue})
 
 @app.route('/api/player/stop', methods=['POST'])
 def stop():
@@ -287,6 +296,16 @@ def stop():
     return jsonify({"status":"ok"})
 
 
+@app.route('/api/testlong')
+def testlong():
+    def generate():
+        x = 0
+        while True:
+            x+=1
+            time.sleep(1)
+            yield 'still here... {}\n'.format(x)
+    return Response(generate(), mimetype='text/plain')
+
 # start the flask loop
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', threaded=True)

@@ -1,10 +1,12 @@
 var renderQueuePage = function() {
-    $("#async_container").append("queue");
+    renderTemplate('queue.html');
+    setupQueueList();
+    updateQueuelist();
 };
 
 
-var setupList = function() {
-    var list = $("#slippylist")[0];
+var setupQueueList = function() {
+    var list = $("#queuelist")[0];
     list.addEventListener('slip:beforereorder', function(e){
         if (/demo-no-reorder/.test(e.target.className)) {
             e.preventDefault();
@@ -32,11 +34,17 @@ var setupList = function() {
     new Slip(list);
 };
 
-var updatePlaylist = function() {
+var updateQueuelist = function() {
     $.getJSON('/api/player/queue', function(data) {
-        var list = $("#slippylist");
-        $.each(data['queue']['tracks'], function(i, e) {
-            list.append("<li>"+e+"</li>");
+        var list = $("#queuelist");
+        console.log(data);
+        $.each(data['queue'], function(i, track) {
+            list.append(nunjucks.renderString("<li><table class='table'><tr><td class='track-icon'><img src='/static/img/equalizer.gif'/></td><td class='col-md-6'>{{title}}</td><td class='col-md-1'>{{length}}</td><td>{{artist}}</td><td>{{collection}}</td></tr></table></li>", {
+                title: track.title,
+                length: track.length,
+                artist: track.collection.artist.name,
+                collection: track.collection.name
+            }));
         });
     });
 };

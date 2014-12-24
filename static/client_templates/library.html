@@ -1,7 +1,12 @@
+<span id='tracklist_title'>{{title|safe}}</span>
 <table class='table tracklist' data-tracks-type="{{tracks_type}}">
   <thead>
-    <tr><th class='col-md-6'>{{title|safe}}</th>
+    <tr>
+      <th class='col-md-6'></th>
       {% if show_tracks %}
+        {% if show_tempo %}
+          <th class='col-md-3'>Tempo</th>
+        {% endif %}
       <th class='col-md-1'>Length</th>
       {% endif %}
     </tr>
@@ -9,11 +14,19 @@
   
   {% if show_tracks %}
     {% for link in links %}
-      <tr><td><a class="track" data-playlist="{{link['playlist']}}" data-collection="{{link['collection']}}" href="{{link['href']}}">{{link.name}}</a></td><td>{{link['length']}}</td></tr>
+      <tr>
+        <td><span class="glyphicon glyphicon-play play-button" aria-hidden="true"></span><a class="track async"
+      data-playlist="{{link['playlist']}}"
+      data-collection="{{link['collection']}}"
+      href="{{link['href']}}">{{link.name}}</a></td>
+        {% if show_tempo %}
+          <td>{{link['tempo']}}</td>
+        {% endif %}
+        <td>{{link['length']}}</td></tr>
     {% endfor %}
   {% else %}
     {% for link in links %}
-      <tr><td><a href="{{link['href']}}">{{link.name}}</a></td></tr>
+      <tr><td><a class="async" href="{{link['href']}}">{{link.name}}</a></td></tr>
     {% endfor %}
   {% endif %}
 </table>

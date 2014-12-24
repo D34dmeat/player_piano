@@ -4,6 +4,7 @@ import threading
 from collections import namedtuple
 import time
 import Pyro4
+import json
 
 import logging
 logging.basicConfig(level=logging.DEBUG)
@@ -37,9 +38,33 @@ class MidiPlayThread(threading.Thread):
 
 class MidiQueue(object):
     def __init__(self, name="untitled"):
-        self.midi = Midi(self.next_track)
-        self.clear()
         self.name = name
+        self.subscriptions = {} # client_id -> pyro4 callback
+        self.midi = Midi(track_end_callback=self.next_track, position_update_callback=self.position_update_callback)
+        self.clear()
+
+    def subscribe(self, client_id, callback):
+        self.subscriptions[client_id] = callback
+        log.info("Client subscribed: {}".format(client_id))
+
+    def publish(self, message):
+        to_unsubscribe = []
+
+        for client_id, subscriber in self.subscriptions.items():
+            try:
+                subscriber.event(message)
+            except Pyro4.errors.ConnectionClosedError:
+                to_unsubscribe.append(client_id)
+
+        for client_id in to_unsubscribe:
+            del self.subscriptions[client_id]
+            log.info("Client disconnected: {}".format(client_id))
+
+    def position_update_callback(self, pos):
+        self.publish({'type':'position_update',
+                      'pos': {'measure': pos.measure,
+                              'beat': pos.beat,
+                              'tick': pos.tick}})
 
     def clear(self):
         self.midi.stop()
@@ -117,7 +142,7 @@ class MidiQueue(object):
 
 class Midi(object):
     """Low level midi interface via midish"""
-    def __init__(self, track_end_callback=None, library_path="midi_store"):
+    def __init__(self, track_end_callback=None, position_update_callback=None, library_path="midi_store"):
         self.library_path = library_path
         self.current_track = None
         self.current_pos = TrackPosition(0,0,0)
@@ -125,6 +150,7 @@ class Midi(object):
         self.play_thread = None
         self._playing_state = "stopped"
         self.track_end_callback = track_end_callback
+        self.position_update_callback = position_update_callback
         self._startup()
 
     def _startup(self):
@@ -196,6 +222,8 @@ class Midi(object):
         else:
             raise MidishException('expecting a track position, but got +ready instead')
         log.debug(self.current_pos)
+        if self.position_update_callback:
+            self.position_update_callback(self.current_pos)
         return self.current_pos
 
 def server():

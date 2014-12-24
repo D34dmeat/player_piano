@@ -1,4 +1,4 @@
-var renderLibraryPage = function() {
+var renderLibraryPage = function(path) {
 
     // @app.route('/library')
     // @app.route('/library/folder/<int:folder_id>/<name>')
@@ -9,10 +9,10 @@ var renderLibraryPage = function() {
     var collection_id;
     var links = [];
 
-    var root_match = location.pathname.match("^/library/?$");
-    var folder_match = location.pathname.match("^/library/folder/([0-9]+)/([^/]+)$");
-    var artist_match = location.pathname.match("^/library/artist/([0-9]+)/([^/]+)$");
-    var collection_match = location.pathname.match("^/library/collection/([0-9]+)/([^/]+)$");
+    var root_match = path.match("^/library/?$");
+    var folder_match = path.match("^/library/folder/([0-9]+)/([^/]+)$");
+    var artist_match = path.match("^/library/artist/([0-9]+)/([^/]+)$");
+    var collection_match = path.match("^/library/collection/([0-9]+)/([^/]+)$");
 
     if (root_match) {
         //get all folders:
@@ -68,10 +68,19 @@ var renderLibraryPage = function() {
                     artist_name: collection.artist.name,
                     collection_name: collection.name
                 });
+                var show_tempo = false;
                 $.each(collection.tracks, function(i, track) {
-                    links.push({type:'track', name:track.title, track_id:track.id, length:track.length, collection:collection_id, collection_order:track.collection_order});
+                    if (track.human_tempo)
+                        show_tempo = true;
+                    links.push({type:'track', 
+                                name:track.title, 
+                                track_id:track.id, 
+                                length:parseInt(track.length / 60) + ":" + ("00"+track.length % 60).slice(-"00".length), 
+                                tempo: track.human_tempo,
+                                collection:collection_id, 
+                                collection_order:track.collection_order});
                 });
-                renderTemplate('library.html', {title:title, links:links, show_tracks:true, tracks_type:"collection"});
+                renderTemplate('library.html', {title:title, links:links, show_tracks:true, show_tempo:show_tempo, tracks_type:"collection"});
                 setupPlayLinks();
             });
         });
@@ -81,7 +90,7 @@ var renderLibraryPage = function() {
 var setupPlayLinks = function() {
     $("table.tracklist").each(function(i, table) {
         var tracks_type = $(table).data('tracks-type')
-        $("a.track").each(function(i, link) {
+        $(".tracklist a.track").each(function(i, link) {
             var link = $(link);
             var request = {};
             if (tracks_type == 'collection') {
@@ -107,6 +116,11 @@ var setupPlayLinks = function() {
                     alert("error: "+data.status+" "+data.statusText+" "+data.responseText);
                 });                
                 e.preventDefault();
+            });
+        });
+        $(".tracklist .play-button").each(function(i, button) {
+            $(button).click(function(e) {
+                $(button).siblings("a.track").click();
             });
         });
     });

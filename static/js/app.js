@@ -1,23 +1,24 @@
 var page_handlers = {
     "/"       : renderQueuePage,
     "/library": renderLibraryPage,
-    "/queue"  : renderQueuePage
+    "/queue"  : renderQueuePage,
+    "/about"  : renderAboutPage
 };
 
 var renderPage = function(path) {
     var page_handler = page_handlers['/'+path.split('/')[1]];
     if (page_handler == undefined || path[0] != '/') {
-        alert("No page handler for '"+path);
+        console.log("No page handler for '"+path);
     } else {
+        //Render the page. Page handler returns the state to return to
+        //if we come back to the current page.
+        var state = page_handler(path);
+        history.replaceState($.extend({}, history.state, state));
         // Push the new page state on to the history, as long as we are
         // not already on that page 
         if (path != location.pathname) {
-            history.pushState({
-            }, null, path);
+            history.pushState(null, null, path);
         }
-        //Render the page:
-        $("#async_container").html("");
-        page_handler();
     }
 }
 
@@ -46,7 +47,10 @@ var getModelJSON = function() {
     });
 };
 
-var renderTemplate = function(template, data) {
+var renderTemplate = function(template, data, clear) {
+    if (clear != false) {
+        $("#async_container").html("");
+    }
     var html = nunjucks.render(template, data);
     $("#async_container").append(html);
     //Turn links into async links:
@@ -60,6 +64,9 @@ var renderTemplate = function(template, data) {
 
 var setupAsyncPageNavigation = function() {
     window.addEventListener("popstate", function(e) {
+        if (e.state && e.state['popstate_callback']) {
+            eval(e.state['popstate_callback'])();
+        }
         renderPage(location.pathname);
     });
     renderPage(location.pathname);
