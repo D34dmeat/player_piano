@@ -3,6 +3,8 @@ from setuptools import setup, find_packages
 
 requires = (
     'Flask',
+    'six',
+    'Pyro4',
     'Flask-Script',
     'daemonize',
     'Flask-SQLAlchemy',
