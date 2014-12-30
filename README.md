@@ -108,6 +108,10 @@ Setup app on raspberry pi
     source player_piano/env/bin/activate
     pip install -e player_piano
 
+ * Install nginx
+
+    pacman -S nginx polkit
+
  * Start Pyro4 nameserver:
 
     pyro4-ns &
