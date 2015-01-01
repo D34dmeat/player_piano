@@ -11,9 +11,10 @@ var resetPlayerState = function() {
 resetPlayerState();
 
 var requestPlayerState = function(state, callback) {
-    var valid_states = ['play','stop','pause','next_track','prev_track','restart_track'];
+    var valid_states = ['play','stop','pause','next_track','prev_track','restart_track', 'clear_queue'];
     if (valid_states.indexOf(state) < 0) {
         alert("Invalid play state: " + state);
+        return;
     }
     player_service(state).then(
         function(result) {
