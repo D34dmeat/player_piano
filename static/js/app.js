@@ -140,7 +140,7 @@ $(document).ajaxStart(function(){
 
 var setup_wamp = function(callback) {
     wamp_connection = new autobahn.Connection({
-        url: 'ws://127.0.0.1:5000/ws',
+        url: 'ws://'+location.host+'/ws',
         realm: 'realm1',
         max_retries: Number.MAX_VALUE,
         max_retry_delay: 10
