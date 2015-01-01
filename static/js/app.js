@@ -1,16 +1,18 @@
 var midiEventSocket;
+var player_service;
+var midi_service;
+var midi_events;
 
 var renderRootPage = function(path) {
     //If there's something in the queue, go to the queue page.
     //If not, go to the library page.
-    $.getJSON('/api/player/queue', function(data) {
+    player_service('queue').then(function(data) {
         if(data['queue'].length == 0) {
             renderPage('/library');
         } else {
             renderPage('/queue');
         }
     });
-    
 }
 
 var page_handlers = {
@@ -86,7 +88,6 @@ var renderTemplate = function(template, data, clear) {
     });
 };
 
-
 var setupAsyncPageNavigation = function() {
     window.addEventListener("popstate", function(e) {
         if (e.state && e.state['popstate_callback']) {
@@ -102,6 +103,23 @@ var setupAsyncPageNavigation = function() {
         renderPage($(e.target).attr('href'));
     });
 };
+
+var createRPCNamespace = function(wamp_session, namespace) {
+    //Create a convenience wrapper around a WAMP RPC namespace
+    // eg: var app = createRPCNamespace('com.example.app');
+    //     app('some_method', [arg1, arg2]).then(function(){ ... });
+    //
+    // Also handles loading indicator
+    return function(method, args) {
+        loadingIndicator();
+        var promise = wamp_session.call.apply(
+            wamp_session, [namespace+"."+method, args]);
+        promise.then(function(){
+            loadingIndicator(false);
+        });
+        return promise;
+    }
+}
 
 var loadingIndicator = function(on_off) {
     if (on_off == false) {
@@ -119,22 +137,46 @@ $(document).ajaxStart(function(){
     loadingIndicator(false);
 });
 
+
+var setup_wamp = function(callback) {
+    wamp_connection = new autobahn.Connection({
+        url: 'ws://127.0.0.1:5000/ws',
+        realm: 'realm1',
+        max_retries: Number.MAX_VALUE,
+        max_retry_delay: 10
+    });
+
+    wamp_connection.onopen = function (session) {
+        console.log("wamp session opened");
+        player_service = createRPCNamespace(session, 'player_piano.player');
+        midi_service = createRPCNamespace(session, 'player_piano.midi');
+        midi_events = midiEventListener(session);
+        callback();
+    }
+    wamp_connection.onclose = function() {
+        console.log("wamp session is closed");
+    }
+    wamp_connection.open();
+}
+
+
 $(document).ready(function() {
+    setup_wamp(function(){
+        updateQueuelist(function(){ 
+            midi_events.start(function() {
+                nunjucks.configure("/static/client_templates", {
+                    autoescape: true
+                });
 
-    updateQueuelist(function(){ 
-        midiEventSocket = midiEventListener();
+                //Render the queue once, but make it invisible when we're not on
+                //the queue page.
+                var queue_html = nunjucks.render('queue.html');
+                $("#queue_container").append(queue_html).hide();
+                setupQueueList();
 
-        nunjucks.configure("/static/client_templates", {
-            autoescape: true
+                setupAsyncPageNavigation();
+                setupPlayerButtons();
+            });
         });
-
-        //Render the queue once, but make it invisible when we're not on
-        //the queue page.
-        var queue_html = nunjucks.render('queue.html');
-        $("#queue_container").append(queue_html).hide();
-        setupQueueList();
-
-        setupAsyncPageNavigation();
-        setupPlayerButtons();
     });
 });

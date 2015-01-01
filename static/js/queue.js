@@ -41,7 +41,7 @@ var setupQueueList = function() {
 };
 
 var updateQueuelist = function(callback) {
-    $.getJSON('/api/player/queue', function(data) {
+    player_service('queue').then(function(data) {
         var list = $("#queuelist");
         $("#queuelist li").remove();
         queueTracks = {};
@@ -69,18 +69,16 @@ var updateQueuelist = function(callback) {
 };
 
 var playQueueTrack = function(track_num, callback) {
-    $.ajax({
-        type: "POST",
-        url: '/api/player/play_queue_track',
-        data: JSON.stringify({track_num:track_num}),
-        contentType: 'application/json'
-    }).success(function(data) {
-        if (callback)
-            callback();
-    }).error(function(data) {
-        console.log(data);
-        alert("error: "+data.status+" "+data.statusText+" "+data.responseText);
-    });
+    player_service('play_queue_track', [track_num]).then(
+        function(result){
+            if (callback)
+                callback();
+        },
+        function(error){
+            console.log(error);
+            alert(error.error);
+        }
+    );
 }
 
 var player_state_callback = function() {

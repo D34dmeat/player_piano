@@ -94,28 +94,25 @@ var setupPlayLinks = function() {
             var link = $(link);
             var request = {};
             if (tracks_type == 'collection') {
-                request['type'] = 'collection';
-                request['id'] = link.data('collection');
+                var play_type = 'collection';
+                var play_id = link.data('collection');
             } else if (tracks_type == 'playlist') {
-                request['type'] = 'playlist';
-                request['id'] = link.data('playlist');
+                var play_type = 'playlist';
+                var play_id = link.data('playlist');
             }            
-            request['track_num'] = i;
+            var track_num = i;
 
             $(link).click(function(e) {
                 //Clear the queue, enqueue the entire collection, skipping
                 //to the track clicked on:
-                $.ajax({
-                    type: "POST",
-                    url: '/api/player/play',
-                    data: JSON.stringify(request),
-                    contentType: 'application/json'
-                }).success(function(data) {
-                    renderPage('/queue');
-                }).error(function(data) {
-                    console.log(data);
-                    alert("error: "+data.status+" "+data.statusText+" "+data.responseText);
-                });
+                player_service('play', [play_type, play_id, track_num]).then(
+                    function(result) {
+                        renderPage('/queue');
+                    },
+                    function(error) {
+                        console.log(error);
+                        alert(error);
+                    });
                 e.preventDefault();
             });
         });

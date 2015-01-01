@@ -3,8 +3,14 @@ import pexpect
 import threading
 from collections import namedtuple
 import time
-import Pyro4
 import json
+
+from twisted.internet.defer import inlineCallbacks
+from autobahn.twisted.util import sleep
+from autobahn import wamp
+from autobahn.twisted.wamp import ApplicationSession, ApplicationRunner
+
+
 
 import logging
 logging.basicConfig(level=logging.DEBUG)
@@ -37,29 +43,17 @@ class MidiPlayThread(threading.Thread):
         log.debug("MidiPlayThread terminated")
 
 class MidiQueue(object):
-    def __init__(self, name="untitled"):
+    def __init__(self, name="untitled", publish_callback=None):
         self.name = name
-        self.subscriptions = {} # client_id -> pyro4 callback
+        self.publish_callback = publish_callback
         self.midi = Midi(track_end_callback=self.next_track, position_update_callback=self.position_update_callback,
                          player_state_callback=self.player_state_callback)
         self.clear()
 
-    def subscribe(self, client_id, callback):
-        self.subscriptions[client_id] = callback
-        log.info("Client subscribed: {}".format(client_id))
-
     def publish(self, message):
-        to_unsubscribe = []
-
-        for client_id, subscriber in self.subscriptions.copy().items():
-            try:
-                subscriber.event(message)
-            except Pyro4.errors.ConnectionClosedError:
-                to_unsubscribe.append(client_id)
-
-        for client_id in to_unsubscribe:
-            del self.subscriptions[client_id]
-            log.info("Client disconnected: {}".format(client_id))
+        if not self.publish_callback:
+            raise AssertionError("No publish callback was registered.")
+        self.publish_callback('player_piano.midi.event.{}'.format(message['type']), message)
 
     def position_update_callback(self, pos):
         self.publish({'type':'position_update',
@@ -70,8 +64,9 @@ class MidiQueue(object):
     def player_state_callback(self, state):
         """Notify player state change: playing, paused, stopped"""
         self.publish({'type':'player_state',
-                      'state': state})
+                            'state': state})
 
+    @wamp.register(u'player_piano.midi.clear')
     def clear(self):
         self.midi.stop()
         self.name = "untitled"
@@ -81,6 +76,7 @@ class MidiQueue(object):
         self.state = "initialized"
         self.publish(self.get_player_state())
 
+    @wamp.register(u'player_piano.midi.add')
     def add(self, track_id, position=None):
         if position is None:
             self.queue.append(track_id)
@@ -89,6 +85,7 @@ class MidiQueue(object):
             self.queue.insert(position, track_id)
             log.info("Added {} as index {} of playlist".format(track_id, position))
 
+    @wamp.register(u'player_piano.midi.remove')
     def remove(self, position):
         if self.current_track_num == position:
             self.next_track()
@@ -96,6 +93,7 @@ class MidiQueue(object):
             self.current_track_num -= 1
         self.queue.pop(position)
 
+    @wamp.register(u'player_piano.midi.get_current_track')
     def get_current_track(self):
         if self.current_track_num < 0:
             track_id = None
@@ -107,16 +105,19 @@ class MidiQueue(object):
                 "current_pos": dict(self.midi.current_pos._asdict())}
         return data
 
+    @wamp.register(u'player_piano.midi.set_next_track')
     def set_next_track(self, track_num):
         # next_track() increments current_track_num, so set it one
         # lower than what it will become:
         self.current_track_num = track_num - 1
         log.info("Set current track: {}".format(self.current_track_num))
 
+    @wamp.register(u'player_piano.midi.get_queue')
     def get_queue(self):
         return {'current_track_num': self.current_track_num,
                 'tracks': self.queue}
 
+    @wamp.register(u'player_piano.midi.get_player_state')
     def get_player_state(self):
         if self.current_track_num >= 0:
             track_id = self.queue[self.current_track_num]
@@ -128,6 +129,7 @@ class MidiQueue(object):
                 "queue": self.get_queue(),
                 "track_length": self.midi.track_length}
 
+    @wamp.register(u'player_piano.midi.next_track')
     def next_track(self, force_play=False, **kw):
         self.midi.stop()
         time.sleep(2)
@@ -148,6 +150,7 @@ class MidiQueue(object):
         if self.state in ("playing",) or force_play:
             self.midi.play()
 
+    @wamp.register(u'player_piano.midi.prev_track')
     def prev_track(self, force_play=False, **kw):
         # re-use next_track() by setting the current_track_num back two
         if self.current_track_num > 0:
@@ -158,6 +161,7 @@ class MidiQueue(object):
             self.midi.stop()
             self.midi.play()
         
+    @wamp.register(u'player_piano.midi.play')
     def play(self):
         if self.state in ('paused', 'stopped'):
             if self.current_track_num >= 0:
@@ -168,10 +172,14 @@ class MidiQueue(object):
             self.next_track(force_play=True)
         self.state = "playing"
 
-    def stop(self):
+    @wamp.register(u'player_piano.midi.stop')
+    def stop(self, sleep=None):
+        if sleep is not None:
+            time.sleep(sleep)
         self.midi.stop()
         self.state = "stopped"
 
+    @wamp.register(u'player_piano.midi.pause')
     def pause(self):
         self.midi.pause()
         self.state = "paused"
@@ -179,7 +187,7 @@ class MidiQueue(object):
 class Midi(object):
     """Low level midi interface via midish"""
     def __init__(self, track_end_callback=None, position_update_callback=None, 
-                 player_state_callback=None, library_path="midi_store"):
+                 player_state_callback=None, library_path=os.path.join(os.path.split(os.path.realpath(__file__))[0], "midi_store")):
         self.library_path = library_path
         self.current_track = None
         self.current_pos = TrackPosition(0,0,0)
@@ -271,14 +279,16 @@ class Midi(object):
             self.position_update_callback(self.current_pos)
         return self.current_pos
 
+class WampMidiQueue(ApplicationSession):
+    @inlineCallbacks
+    def onJoin(self, details): 
+        midiqueue = MidiQueue(publish_callback=self.publish)            
+        registrations = yield self.register(midiqueue)
+
+
 def server():
-    midi = MidiQueue()
-    daemon = Pyro4.Daemon()
-    ns = Pyro4.locateNS()
-    uri=daemon.register(midi)
-    ns.register("midi", uri)
-    print("Ready. Registered midi server with Pyro4 nameserver.")
-    daemon.requestLoop()
+    runner = ApplicationRunner("ws://127.0.0.1:5000/ws", "realm1")
+    runner.run(WampMidiQueue)
 
 if __name__ == "__main__":
     server()

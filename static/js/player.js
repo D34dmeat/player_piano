@@ -11,18 +11,19 @@ var resetPlayerState = function() {
 resetPlayerState();
 
 var requestPlayerState = function(state, callback) {
-    $.ajax({
-        type: "POST",
-        url: '/api/player/'+state,
-        data: "{}",
-        contentType: 'application/json'
-    }).success(function(data) {
-        if (callback)
-            callback();
-    }).error(function(data) {
-        console.log(data);
-        alert("error: "+data.status+" "+data.statusText+" "+data.responseText);
-    });
+    var valid_states = ['play','stop','pause','next_track','prev_track','restart_track'];
+    if (valid_states.indexOf(state) < 0) {
+        alert("Invalid play state: " + state);
+    }
+    player_service(state).then(
+        function(result) {
+            if (callback)
+                callback();
+        },
+        function(error) {
+            console.log(error);
+            alert(error.error);            
+        });
 }
 
 var setupPlayerButtons = function() {
@@ -76,41 +77,48 @@ var showPlayerTrackDetails = function(on_off) {
     }
 }
 
-var midiEventListener = function(connectionAttempts) {
-    var wsUri = "ws://" + window.location.host + "/api/player/events";
-    var ws = new WebSocket(wsUri);
-    if (connectionAttempts == undefined) {
-        connectionAttempts = 0;
-    }
-    ws.onmessage = function(evt) {
-        connectionAttempts = 0;
-        var data = JSON.parse(evt.data);
-        if (data['type'] == 'load_track') {
-            playerState.track_length = data['track_length'];
-            playerState.queue = data['queue'];
-            playerState.track_id = data['track_id'];
-            console.log(data);
+var midiEventListener = function(session) {
+    
+    var load_track = function(data) {
+        $.each(data, function(i, event) {
+            playerState.track_length = event['track_length'];
+            playerState.queue = event['queue'];
+            playerState.track_id = event['track_id'];
             load_track_callback();
-        }
-        else if (data['type'] == 'player_state') {
-            playerState.state = data.state;
+        });
+    }
+    var player_state = function(data) {
+        $.each(data, function(i, event) {
+            playerState.state = event.state;
             setupPlayerButtons();
             player_state_callback();
-        }
-        else if (data['type'] == 'position_update') {
-            playerState.track_pos = data['pos'];
+        });
+    }
+    var position_update = function(data) {
+        $.each(data, function(i, event) {
+            playerState.track_pos = event['pos'];
             player_position_update_callback();
-        }
-    };
-    ws.onclose = function(evt) {
-        resetPlayerState();
-        var timeToWait = exponentialBackoff(connectionAttempts, 10);
-        setTimeout(function() {
-            console.log("Attempting to reconnect to player events websocket in {} seconds..".format(timeToWait / 1000));
-            midiEventSocket = midiEventListener(connectionAttempts+1);
-        }, timeToWait);
-    };
-    return ws;
+        });
+    }
 
+    var start = function(callback) {
+        //Play state and load track events may have happened before we
+        //started listening, so update those manually first:
+        console.log("midi event listener startup...")
+        midi_service('get_player_state').then(function(result){
+            load_track([result]);
+            player_state([{state: result.play_state}]);
+
+            //Start listening to realtime events:
+            session.subscribe('player_piano.midi.event.load_track', load_track);
+            session.subscribe('player_piano.midi.event.player_state', player_state);
+            session.subscribe('player_piano.midi.event.position_update', position_update);
+            callback();
+        });
+    }
+
+    return {
+        start : start
+    }
 };
 

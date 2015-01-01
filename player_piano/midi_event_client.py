@@ -2,7 +2,7 @@ import Pyro4
 import uuid
 import logging
 import threading
-import queue
+from six.moves import queue
 
 log = logging.getLogger("midi_event_client")
 
@@ -15,8 +15,11 @@ class MidiEventQueue(threading.Thread):
     def process_event(self, message):
         self.event_queue.put(message)
 
-    def get_event(self):
-        return self.event_queue.get()
+    def get_event(self, timeout=0.1):
+        return self.event_queue.get(timeout=timeout)
+
+    def stop(self):
+        self.midi_event_client.abort = True
     
     def run(self):
         self.midi_event_client.process_events()

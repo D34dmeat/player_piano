@@ -2,18 +2,16 @@ import sys
 from setuptools import setup, find_packages
 
 requires = (
+    'crossbar',
     'Flask',
-    'six',
-    'Pyro4',
     'Flask-Script',
-    'daemonize',
     'Flask-SQLAlchemy',
     'Flask-Restless',
-    'Flask-uWSGI-WebSocket',
     'nose',
     'pexpect',
     'requests',
-    'mido'
+    'mido',
+    'six',
 )
 
 setup(
